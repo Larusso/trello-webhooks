@@ -13,5 +13,5 @@ Moped.logger = Logger.new($stdout)
 
 use Rack::MethodOverride
 
-run TrelloWebhookListener
+run TrelloHookListener
 

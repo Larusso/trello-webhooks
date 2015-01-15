@@ -1,20 +1,14 @@
 require 'sinatra'
 require 'json'
-require 'client'
-require 'comment_formatter'
-require 'message_parser'
-require 'users'
-require 'trello_card_commits'
 require 'pp'
 require 'erb'
 require 'yaml'
 require 'rubygems'
 require 'active_support/inflector'
 require 'set'
-require 'mongoid'
-require 'webhooker'
+require 'version'
 
-class TrelloWebhookListener < Sinatra::Base
+class TrelloHookListener < Sinatra::Base
 
   ############################################################
   ## Trello Webhook registration
@@ -24,6 +18,10 @@ class TrelloWebhookListener < Sinatra::Base
   #
   get '/register' do
     erb :register
+  end
+
+  get '/version' do
+    "version: #{TrelloWebhookListener::VERSION}"
   end
 
   ############################################################
