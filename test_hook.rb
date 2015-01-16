@@ -5,13 +5,20 @@ require 'json'
 
 $VERBOSE=true
 
-payload_body = File.read(ARGV[0])
-
-signature = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['SECRET_TOKEN'], payload_body)
+payload_body = {
+  description: "Jelly Splash Board Hook",
+  callbackURL: "https://trello-webhook-listener.herokuapp.com/hook",
+  idModel: "53d77b7e8b272ed7c843a945",
+}
 
 request = Typhoeus::Request.new(
-  "http://localhost:5555/payload",
+  "https://trello.com/1/tokens/eee16206196ee309bfcdb3d5e92d0e61b1dbf43eeecbbab4c49c980af997199b/webhooks/?key=15fa67cfb207041016bdd1c3d835efd4",
   method: :post,
   body: payload_body,
-  headers: { ContentType: "application/json", X_Hub_Signature: signature }
-).run
+)
+
+response = request.run
+puts response.code
+puts response.total_time
+puts response.headers
+puts response.body
