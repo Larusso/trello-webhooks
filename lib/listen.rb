@@ -28,6 +28,10 @@ class TrelloHookListener < Sinatra::Base
   ## Trello Webhook
   ############################################################
 
+  get '/hook' do
+    return 200
+  end
+
   post '/hook' do
     request.body.rewind
     payload_body = request.body.read
@@ -53,4 +57,3 @@ class TrelloHookListener < Sinatra::Base
   end
 
 end
-

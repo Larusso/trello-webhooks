@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="favicon.ico">
+
+  <title>Register</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/cover.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="site-wrapper">
+
+    <div class="site-wrapper-inner">
+
+      <div class="cover-container">
+
+        <div class="masthead clearfix">
+          <div class="inner">
+            <h3 class="masthead-brand">Trello webhooker - Register</h3>
+          </div>
+        </div>
+        <div class="inner cover">
+          <h2 class="cover-heading">Connect github user with trello.</h2>
+
+          <div class="row" id="step_1">
+            <h3 class="cover-heading">Step 1</h3>
+            <button class="btn btn-default" id="connect-trello-btn" type="button">Connect To Trello</button>
+          </div>
+
+          <div class="row" id="step_2">
+            <h3 class="cover-heading">Step 2</h3>
+            <form id="register-form" action="/user" method="post">
+              <div class="input-group">
+                <span class="input-group-addon">@</span>
+                <input type="text" id="github-username-input" name="github-username" class="form-control" placeholder="Github username">
+                <input name="_method" type="hidden" value="put" />
+                <input type="hidden" name="trello-token" id="trello-token-input" readonly="readonly" class="form-control" placeholder="trello user token">
+
+                <span class="input-group-btn">
+                  <input class="btn btn-default" type="submit" value="Connect">
+                </span>
+              </div>
+            </form>
+            <div>
+              <button class="btn btn-default" id="disconnect-trello-btn" type="button">Disconnect Trello</button>
+            </div>
+          </div>
+
+          <div class="row" id="step_3">
+
+
+            <button class="btn btn-default" id="disconnect-btn" type="button">Disconnect</button>
+          </div>        
+        </div>
+      </div>
+
+      <div class="mastfoot">
+        <div class="inner">
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://api.trello.com/1/client.js?key=c5431de55ea4b301d5d74f0f1d3d30de"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script>
+
+    var TrelloWebhooker = {
+      username : undefined,
+      hasUser : function(){
+        return TrelloWebhooker.username != undefined;
+      },
+
+      deauthorize : function () {
+        $.ajax({
+          url: '/user/' + TrelloWebhooker.username,
+          type: 'DELETE',
+          success: function(result) {
+            // Do something with the result
+          }
+        });
+        TrelloWebhooker.username = "";
+      }
+    };
+
+    var onAuthorize = function() {
+      $("#trello-token-input").val(Trello.token());
+      $.getJSON("/username", {token: Trello.token()}, function (data, textStatus, jqXHR) 
+      {
+        TrelloWebhooker.username = data['user_name'];
+        $("#github-username-input").val(data['user_name']);
+        updateLoggedIn();
+      });
+    };
+
+    $('#connect-trello-btn').click(function () {
+      Trello.authorize({
+        type: "redirect",
+        name: "Github webhooker",
+        success: onAuthorize,
+        scope: { write: true, read: true },
+        expiration: "never"
+      });
+    });
+
+    $('#disconnect-trello-btn').click(function () {
+      Trello.deauthorize();
+      updateLoggedIn();
+    });
+
+    $('#disconnect-btn').click(function () {
+      Trello.deauthorize();
+      TrelloWebhooker.deauthorize();
+      updateLoggedIn();
+    });
+
+    $('#connect-btn').click(function () {
+      $('register-form').submit();
+    });
+
+    var updateLoggedIn = function() 
+    {
+      var isLoggedIn = Trello.authorized();
+      var hasUsername = TrelloWebhooker.hasUser();
+
+      console.log(isLoggedIn);
+      console.log(hasUsername);
+
+      $("#step_1").toggle(!isLoggedIn);
+      $("#step_2").toggle(isLoggedIn && !hasUsername);
+      $("#step_3").toggle(isLoggedIn && hasUsername);
+    };
+    
+    var logout = function() {
+      Trello.deauthorize();
+      updateLoggedIn();
+    };
+
+    Trello.authorize({
+      interactive:false,
+      success: onAuthorize,
+      error: updateLoggedIn
+    });
+
+    </script>
+  </body>
+  </html>
