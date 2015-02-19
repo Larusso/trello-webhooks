@@ -44,7 +44,7 @@ class TrelloHookListener < Sinatra::Base
     end
 
     unless push.nil?
-      puts push
+      puts push.to_json
     end
 
     return 200
