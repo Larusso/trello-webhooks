@@ -7,6 +7,8 @@ require 'rubygems'
 require 'active_support/inflector'
 require 'set'
 require 'version'
+require 'hooks/auto-assign'
+require 'client'
 
 class TrelloHookListener < Sinatra::Base
 
@@ -28,7 +30,7 @@ class TrelloHookListener < Sinatra::Base
   ## Trello Webhook
   ############################################################
 
-  get '/hook' do
+  head '/hook' do
     return 200
   end
 
@@ -36,7 +38,7 @@ class TrelloHookListener < Sinatra::Base
     request.body.rewind
     payload_body = request.body.read
     verify_signature(payload_body)
-    
+
     if params[:payload]
       push = JSON.parse(params[:payload])
     else
@@ -48,6 +50,28 @@ class TrelloHookListener < Sinatra::Base
     end
 
     return 200
+  end
+
+  ############################################################
+  ## auto assign
+  ############################################################
+
+  head '/auto-assign' do
+    return 200
+  end
+
+  post '/auto-assign' do
+    request.body.rewind
+    payload_body = request.body.read
+    verify_signature(payload_body)
+    
+    if params[:payload]
+      push = JSON.parse(params[:payload])
+    else
+      push = JSON.parse payload_body
+    end
+
+    Hooks::AutoAssign.new(push).execute
   end
 
   def verify_signature(payload_body)
