@@ -1,4 +1,7 @@
 require_relative 'base'
+
+require 'logger'
+
 module Trello
 	# A colored Label attached to a card
 	class Label < BasicData
@@ -22,11 +25,22 @@ module Hooks
 		VERSION_GROUP_PATTERN = /(\d+\.\d+(\.\d+)?(\.[\w\d]+)?)/
 		COLORS = ["green", "yellow", "orange", "red", "purple", "blue", "sky", "lime", "pink", "black"]
 
+		def logger
+			if @logger.nil?
+				@logger = Logger.new(STDOUT)
+				@logger.level = Logger::DEBUG
+			end
+			@logger
+		end
+
 		def execute
+			logger.info("execute")
 			if (card_created? || card_moved?)
+				logger.info("card created or moved")
 				card_list = card.list
-				unless versioned_list? card_list
+				if versioned_list? card_list
 					version = list_version card_list
+					logger.info("put version #{version} to card #{card.id}")
 					update_card_version card, version
 				end
 			elsif (list_updated? && versioned_list?(list))
