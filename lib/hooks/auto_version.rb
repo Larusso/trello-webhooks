@@ -44,13 +44,13 @@ module Hooks
 					client.post("/labels", body)
 				end
 				
-				label = find_label version
+				label_to_add = find_label version
 				id_labels = card_version_labels(card).map {|label| label.id}
 				id_labels.each {|id|
 					client.delete("/cards/#{card.id}/idLabels/#{id}")
 				}
 
-				client.post("/cards/#{card.id}/idLabels", {value: label.id})
+				client.post("/cards/#{card.id}/idLabels", {value: label_to_add.id}) unless label_to_add.nil?
 			end
 		end
 
