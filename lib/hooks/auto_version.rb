@@ -23,13 +23,13 @@ module Hooks
 		COLORS = ["green", "yellow", "orange", "red", "purple", "blue", "sky", "lime", "pink", "black"]
 
 		def execute
-			if (card_created? or card_moved?)
-				list = card.list
-				unless versioned_list? list
-					version = list_version list
+			if (card_created? || card_moved?)
+				card_list = card.list
+				unless versioned_list? card_list
+					version = list_version card_list
 					update_card_version card, version
 				end
-			elsif list_updated? and versioned_list? list
+			elsif (list_updated? && versioned_list?(list))
 				version = list_version list
 				list.cards.each {|card|
 					update_card_version card, version

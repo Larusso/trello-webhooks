@@ -9,6 +9,7 @@ require 'set'
 require 'version'
 require 'hooks'
 require 'client'
+require 'bundler/setup'
 
 class TrelloHookListener < Sinatra::Base
 
