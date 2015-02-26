@@ -7,7 +7,7 @@ require 'rubygems'
 require 'active_support/inflector'
 require 'set'
 require 'version'
-require 'hooks/auto-assign'
+require 'hooks'
 require 'client'
 
 class TrelloHookListener < Sinatra::Base
