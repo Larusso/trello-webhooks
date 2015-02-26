@@ -74,6 +74,28 @@ class TrelloHookListener < Sinatra::Base
     Hooks::AutoAssign.new(push).execute
   end
 
+  ############################################################
+  ## auto version
+  ############################################################
+
+  head '/auto-version' do
+    return 200
+  end
+
+  post '/auto-version' do
+    request.body.rewind
+    payload_body = request.body.read
+    verify_signature(payload_body)
+    
+    if params[:payload]
+      push = JSON.parse(params[:payload])
+    else
+      push = JSON.parse payload_body
+    end
+
+    Hooks::AutoVersion.new(push['action'].to_json).execute
+  end
+
   def verify_signature(payload_body)
     return true
     #signature = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['SECRET_TOKEN'], payload_body)
