@@ -72,7 +72,7 @@ class TrelloHookListener < Sinatra::Base
       push = JSON.parse payload_body
     end
 
-    Hooks::AutoAssign.new(push).execute
+    Hooks::AutoAssign.new(push['action']).execute
   end
 
   ############################################################
@@ -94,7 +94,7 @@ class TrelloHookListener < Sinatra::Base
       push = JSON.parse payload_body
     end
 
-    Hooks::AutoVersion.new(push['action'].to_json).execute
+    Hooks::AutoVersion.new(push['action']).execute
   end
 
   def verify_signature(payload_body)

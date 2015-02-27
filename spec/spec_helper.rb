@@ -172,6 +172,33 @@ module Helpers
 				},
 				'date' => '2012-02-10T11:32:17Z',
 				'type' => 'updateList'
+			},
+			card_moved_doing: {
+				'id' => 'abcdef123456789123456789',
+				'idMemberCreator' => 'abcdef123456789123456789',
+				'data'=> {
+					'listAfter' => {
+        				"name"=> "todo 1.33.4",
+        				"id"=> "54eef8a54e22aeee50bcee3f"
+      				},
+      				"listBefore"=> {
+        				"name" => "Done",
+        				"id" => "53d77b7e8b272ed7c843a946"
+      				},
+					'card' => {
+						'id' => 'abcdef123456789123456789',
+						'name' => 'Bytecode outputter'
+					},
+					'board' => {
+						'id' => '4ec54f2f73820a0dea0d1f0e',
+						'name' => 'Caribou VM'
+					},
+					"old" => {
+        				"idList" => "4ee238b034a81a757a05cda0"
+      				}
+				},
+				'date' => '2012-02-10T11:32:17Z',
+				'type' => 'updateCard'
 			}
 		}[key]
 	end
@@ -190,7 +217,7 @@ module Helpers
 			'idList' => 'abcdef123456789123456789',
 			'idBoard' => 'abcdef123456789123456789',
 			'idAttachmentCover' => 'abcdef123456789123456789',
-			'idMembers' => ['abcdef123456789123456789'],
+			'idMembers' => ['fedcba987654321987654321'],
 			'url' => 'https://trello.com/card/board/specify-the-type-and-scope-of-the-jit-in-a-lightweight-spec/abcdef123456789123456789/abcdef123456789123456789',
 			'shortUrl' => 'https://trello.com/c/abcdef12',
 			'pos' => 12,
@@ -203,13 +230,23 @@ module Helpers
 	end
 
 	def lists_details key
+		d = {
+				'id' => 'abcdef123456789123456789',
+				'name' => 'Todo 1.22.1',
+				'closed' => false,
+				'idBoard' => 'abcdef123456789123456789',
+				'cards' => [cards_details(key),cards_details(key),cards_details(key)]
+			}
 		{
-			'id' => 'abcdef123456789123456789',
-			'name' => 'Todo 1.22.1',
-			'closed' => false,
-			'idBoard' => 'abcdef123456789123456789',
-			'cards' => [cards_details(key),cards_details(key),cards_details(key)]
-		}
+			card_moved_doing:
+			{
+				'id' => 'abcdef123456789123456789',
+				'name' => 'Doing',
+				'closed' => false,
+				'idBoard' => 'abcdef123456789123456789',
+				'cards' => [cards_details(key),cards_details(key),cards_details(key)]
+			}
+		}.fetch(key, d)
 	end
 
 	def lists_payload key
