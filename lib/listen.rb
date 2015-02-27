@@ -40,7 +40,7 @@ class TrelloHookListener < Sinatra::Base
     payload_body = request.body.read
     verify_signature(payload_body)
 
-    puts "X-Trello-Webhook #{request.env['X-Trello-Webhook']}"
+    puts "X-Trello-Webhook #{request['X-Trello-Webhook']}"
     puts "request full path #{request.fullpath}"
 
     if params[:payload]
