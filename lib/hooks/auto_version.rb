@@ -21,26 +21,22 @@ end
 
 module Hooks
 	class AutoVersion < Base
+
 		VERSION_PATTERN = %r!\d+\.\d+(\.\d+)?!
 		VERSION_GROUP_PATTERN = /(\d+\.\d+(\.\d+)?(\.[\w\d]+)?)/
 		COLORS = ["green", "yellow", "orange", "red", "purple", "blue", "sky", "lime", "pink", "black"]
 
-		def logger
-			if @logger.nil?
-				@logger = Logger.new(STDOUT)
-				@logger.level = Logger::DEBUG
-			end
-			@logger
-		end
-
 		def execute
-			logger.info("execute")
+			Hooks.logger.info("execute")
+			
 			if (card_created? || card_moved?)
-				logger.info("card created or moved")
-				card_list = card.list
+				Hooks.logger.info("card created or moved")
+			
+				card_list = list.nil? ? card.list : list
 				if versioned_list? card_list
 					version = list_version card_list
-					logger.info("put version #{version} to card #{card.id}")
+					
+					Hooks.logger.info("put version #{version} to card #{card.id}")
 					update_card_version card, version
 				end
 			elsif (list_updated? && versioned_list?(list))
@@ -52,14 +48,18 @@ module Hooks
 		end
 
 		def update_card_version card, version
+			Hooks.logger.info("update card #{card.id}, version #{version}")
+
 			unless card_has_label? card, version
 				unless board_has_label? version
+					Hooks.logger.info("board needs new label")
 					body = {name: version, idBoard: board.id, color: COLORS.sample}
 					client.post("/labels", body)
 				end
 				
 				label_to_add = find_label version
 				id_labels = card_version_labels(card).map {|label| label.id}
+				
 				id_labels.each {|id|
 					client.delete("/cards/#{card.id}/idLabels/#{id}")
 				}

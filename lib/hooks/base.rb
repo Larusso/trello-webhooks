@@ -3,10 +3,18 @@ require 'json'
 
 module Hooks
 	class Base
-			attr_accessor :action, :data
+
+		attr_accessor :action, :data
 
 		def initialize action
-			@action = action.json_into(Trello::Action)
+			case action
+			when String
+				@action = action.json_into(Trello::Action)
+			when Hash
+				@action = Trello::Action.new action
+			when Trello::Action
+				@action = action
+			end
 			@data = @action.data
 		end
 
@@ -27,7 +35,11 @@ module Hooks
 		end
 
 		def board
-			@action.board
+			begin
+				@action.board
+			rescue
+				nil
+			end
 		end
 
 		def member_creator
@@ -36,9 +48,6 @@ module Hooks
 
 		def client
 			Trello.client
-		end
-
-		def execute
 		end
 
 		def card_moved?
@@ -55,6 +64,9 @@ module Hooks
 
 		def list_updated?
 			@action.type.eql? 'updateList'
+		end
+
+		def execute
 		end
 	end
 end
