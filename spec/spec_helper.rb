@@ -4,10 +4,8 @@ require 'hooks'
 require 'trello'
 require 'json'
 
-Trello.configure do |config|	
-  config.developer_public_key = ENV["TRELLO_APP_KEY"]
-  config.member_token = ENV["TRELLO_TOKEN"]
-end
+ENV['TRELLO_KEY'] = "test_key"
+ENV['TRELLO_MEMBER_TOKEN'] = "test_token"
 
 module Helpers
 

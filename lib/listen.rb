@@ -10,6 +10,8 @@ require 'version'
 require 'hooks'
 require 'client'
 require 'bundler/setup'
+require 'base64'
+require 'openssl'
 
 class TrelloHookListener < Sinatra::Base
 
@@ -38,10 +40,7 @@ class TrelloHookListener < Sinatra::Base
   post '/hook' do
     request.body.rewind
     payload_body = request.body.read
-    verify_signature(payload_body)
-
-    puts "X-Trello-Webhook #{headers['X-Trello-Webhook']}"
-    puts "request full path #{request.fullpath}"
+    verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK']
 
     if params[:payload]
       push = JSON.parse(params[:payload])
@@ -67,7 +66,7 @@ class TrelloHookListener < Sinatra::Base
   post '/auto-assign' do
     request.body.rewind
     payload_body = request.body.read
-    verify_signature(payload_body)
+    #verify_signature(payload_body)
     
     if params[:payload]
       push = JSON.parse(params[:payload])
@@ -89,7 +88,7 @@ class TrelloHookListener < Sinatra::Base
   post '/auto-version' do
     request.body.rewind
     payload_body = request.body.read
-    verify_signature(payload_body)
+    #verify_signature(payload_body)
     
     if params[:payload]
       push = JSON.parse(params[:payload])
@@ -100,10 +99,16 @@ class TrelloHookListener < Sinatra::Base
     Hooks::AutoVersion.new(push['action']).execute
   end
 
-  def verify_signature(payload_body)
-    return true
-    #signature = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['SECRET_TOKEN'], payload_body)
-    #return halt 500, "Signatures didn't match!" unless Rack::Utils.secure_compare(signature, request.env['HTTP_X_HUB_SIGNATURE'])
+  def base64Digest subject, times=1
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['TRELLO_KEY'], subject)
+  end
+
+  def verify_signature payload_body, callbackURL, hash
+    content = payload_body + callbackURL
+    double_hash = base64Digest(base64Digest(content))
+    header_hash = base64Digest hash
+
+    return halt 500, "Signatures didn't match!" unless Rack::Utils.secure_compare(double_hash, header_hash)
   end
 
 end
