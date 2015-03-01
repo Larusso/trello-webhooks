@@ -65,7 +65,7 @@ class TrelloHookListener < Sinatra::Base
   post '/auto-assign' do
     request.body.rewind
     payload_body = request.body.read
-    #verify_signature(payload_body)
+    verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK'], ENV['TRELLO_SECRET']
     
     if params[:payload]
       push = JSON.parse(params[:payload])
@@ -87,7 +87,7 @@ class TrelloHookListener < Sinatra::Base
   post '/auto-version' do
     request.body.rewind
     payload_body = request.body.read
-    #verify_signature(payload_body)
+    verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK'], ENV['TRELLO_SECRET']
     
     if params[:payload]
       push = JSON.parse(params[:payload])
