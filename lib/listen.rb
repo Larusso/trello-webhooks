@@ -100,7 +100,7 @@ class TrelloHookListener < Sinatra::Base
   end
 
   def base64Digest subject, times=1
-    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['TRELLO_KEY'], subject)
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['TRELLO_SECRET'], subject)
   end
 
   def verify_signature payload_body, callbackURL, hash
