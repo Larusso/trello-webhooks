@@ -11,7 +11,7 @@ describe TrelloHookListener do
 	subject {TrelloHookListener.new!}
 
 	before :each do
-		ENV["TRELLO_KEY"] = trello_key
+		ENV["TRELLO_SECRET"] = trello_key
 	end
 
 	describe '.verify_signature' do
