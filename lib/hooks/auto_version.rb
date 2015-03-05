@@ -2,29 +2,11 @@ require_relative 'base'
 
 require 'logger'
 
-module Trello
-	# A colored Label attached to a card
-	class Label < BasicData
-		register_attributes :name, :color, :id
-		# Update the fields of a label.
-		#
-		# Supply a hash of stringkeyed data retrieved from the Trello API representing
-		# a label.
-		def update_fields(fields)
-			attributes[:id] = fields['id']
-			attributes[:name] = fields['name']
-			attributes[:color] = fields['color']
-			self
-		end
-	end
-end
-
 module Hooks
 	class AutoVersion < Base
 
 		VERSION_PATTERN = %r!\d+\.\d+(\.\d+)?!
 		VERSION_GROUP_PATTERN = /(\d+\.\d+(\.\d+)?(\.[\w\d]+)?)/
-		COLORS = ["green", "yellow", "orange", "red", "purple", "blue", "sky", "lime", "pink", "black"]
 
 		def execute
 			Hooks.logger.info("execute")
@@ -51,20 +33,21 @@ module Hooks
 			Hooks.logger.info("update card #{card.id}, version #{version}")
 
 			unless card_has_label? card, version
+				label_to_add = nil
 				unless board_has_label? version
 					Hooks.logger.info("board needs new label")
-					body = {name: version, idBoard: board.id, color: COLORS.sample}
-					client.post("/labels", body)
+					label_to_add = Trello::Label.create name: version, board_id: board.id, color: Trello::Label.label_colours.sample
+				else
+					label_to_add = find_label version
 				end
+
+				id_labels = card_version_labels(card)
 				
-				label_to_add = find_label version
-				id_labels = card_version_labels(card).map {|label| label.id}
-				
-				id_labels.each {|id|
-					client.delete("/cards/#{card.id}/idLabels/#{id}")
+				id_labels.each {|label|
+					card.remove_label label
 				}
 
-				client.post("/cards/#{card.id}/idLabels", {value: label_to_add.id}) unless label_to_add.nil?
+				card.add_label(label_to_add) unless label_to_add.nil?
 			end
 		end
 
@@ -81,28 +64,17 @@ module Hooks
 			!list_version(list).nil?
 		end
 
-		def item_has_label? item_type, id, name
-			status = false
-			labels = client.find_many(Trello::Label, "/#{item_type}/#{id}/labels", {})
-			labels.each { |label|
-				status = label.name.eql? name
-				break if status
-			}
-			status
-		end
-
 		def card_has_label? card, name
-			item_has_label? 'cards', card.id, name
+			card.labels.map { |label| label.name }.include? name
 		end
 
 		def board_has_label? name
-			item_has_label? 'board', board.id, name
+			board.labels(false).map{ |label| label.name }.include? name
 		end
 
 		def find_label name
 			label = nil
-			labels = client.find_many(Trello::Label, "/board/#{board.id}/labels", {})
-			labels.each { |l|
+			board.labels(false).each { |l|
 				label = l if l.name.eql? name
 				break if label
 			}
@@ -110,16 +82,15 @@ module Hooks
 		end
 
 		def card_labels card
-			labels = client.find_many(Trello::Label, "/cards/#{card.id}/labels", {})
+			labels = card.labels
 		end
 
 		def board_labels
-			labels = client.find_many(Trello::Label, "/board/#{board.id}/labels", {})
+			labels = board.labels false
 		end
 
 		def card_version_labels card
-			labels = card_labels card
-			labels.select { |label|
+			card.labels.select { |label|
 				!(label.name =~ VERSION_PATTERN).nil?
 			}
 		end

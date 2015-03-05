@@ -2,7 +2,7 @@ source 'https://rubygems.org/'
 
 gem 'sinatra'
 gem 'unicorn'
-gem 'ruby-trello'
+gem 'ruby-trello', :git => 'https://github.com/Larusso/ruby-trello.git', :branch => 'implement_new_labels_api'
 gem "mongoid", "~> 4.0.0"
 
 gem 'autotest'
