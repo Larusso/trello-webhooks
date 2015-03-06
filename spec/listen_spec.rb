@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require_relative 'spec_helper'
 require 'listen'
 require 'base64'
@@ -18,6 +20,12 @@ describe TrelloHookListener do
 		
 		context 'when signature is equal' do
 			let(:hash) { Base64.strict_encode64(OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha1'), trello_key, payload_body+callback_URL)) }
+			it { expect { subject.verify_signature(payload_body, callback_URL, hash, trello_key) }.not_to throw_symbol(:halt, [500, "Signatures didn't match!"]) }
+		end
+
+		context 'when umlauts in payload with binary encoded payload' do
+			let(:payload_body) {'{"test":"bödy"}'}
+			let(:hash) { Base64.strict_encode64(OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha1'), trello_key, (payload_body+callback_URL).unpack('U*').pack('c*'))) }
 			it { expect { subject.verify_signature(payload_body, callback_URL, hash, trello_key) }.not_to throw_symbol(:halt, [500, "Signatures didn't match!"]) }
 		end
 	end

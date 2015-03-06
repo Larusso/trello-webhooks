@@ -102,6 +102,10 @@ class TrelloHookListener < Sinatra::Base
   def verify_signature payload_body, callbackURL, hash, secret
     content = payload_body + callbackURL
 
+    #convert to binary encoded string
+    #trello creates the base64 hash with a binary encoded payload
+    content = content.unpack('U*').pack('c*')
+
     base64_digest = lambda {|s, times=1|
       digest = Base64.strict_encode64(OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha1'), secret, s))
       digest = base64_digest.call digest, times -1 unless times == 1
@@ -111,7 +115,6 @@ class TrelloHookListener < Sinatra::Base
     double_hash = base64_digest.call content, 2
     header_hash = base64_digest.call hash
 
-    puts "Signatures didn't match!" unless Rack::Utils.secure_compare(header_hash, double_hash)
     return halt 500, "Signatures didn't match!" unless Rack::Utils.secure_compare(header_hash, double_hash)
   end
 end
