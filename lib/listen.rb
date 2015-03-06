@@ -40,8 +40,6 @@ class TrelloHookListener < Sinatra::Base
   post '/hook' do
     request.body.rewind
     payload_body = request.body.read
-
-    verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK'], ENV['TRELLO_SECRET']
     
     if params[:payload]
       puts params[:payload]
@@ -50,7 +48,10 @@ class TrelloHookListener < Sinatra::Base
       puts payload_body
       push = JSON.parse payload_body
     end
-    
+	
+	puts "hash: #{request.env['HTTP_X_TRELLO_WEBHOOK']}"
+	verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK'], ENV['TRELLO_SECRET']
+
     return 200
   end
 
