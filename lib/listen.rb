@@ -110,6 +110,7 @@ class TrelloHookListener < Sinatra::Base
     double_hash = base64_digest.call content, 2
     header_hash = base64_digest.call hash
 
+    puts "Signatures didn't match!" unless Rack::Utils.secure_compare(header_hash, double_hash)
     return halt 500, "Signatures didn't match!" unless Rack::Utils.secure_compare(header_hash, double_hash)
   end
 end
