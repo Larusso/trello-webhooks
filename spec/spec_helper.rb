@@ -3,6 +3,7 @@ Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].e
 require 'hooks'
 require 'trello'
 require 'json'
+require 'trello/convert_to_card_action'
 
 ENV['TRELLO_KEY'] = "test_key"
 ENV['TRELLO_MEMBER_TOKEN'] = "test_token"
@@ -197,6 +198,32 @@ module Helpers
 				},
 				'date' => '2012-02-10T11:32:17Z',
 				'type' => 'updateCard'
+			},
+			convert_card: {
+				'id' => 'abcdef123456789123456789',
+				'idMemberCreator' => 'abcdef123456789123456789',
+				'data'=> {
+					'cardSource' => {
+        				"shortLink" => "D8IsnJqS",
+        				"idShort" => 21,
+        				"name"=> "Test Card",
+        				"id"=> "54eef8a54e22aeee50bcee3f"
+      				},
+      				"list"=> {
+        				"name" => "Done",
+        				"id" => "53d77b7e8b272ed7c843a946"
+      				},
+					'card' => {
+						'id' => 'abcdef123456789123456789',
+						'name' => 'Bytecode outputter'
+					},
+					'board' => {
+						'id' => '4ec54f2f73820a0dea0d1f0e',
+						'name' => 'Caribou VM'
+					},
+				},
+				'date' => '2012-02-10T11:32:17Z',
+				'type' => 'convertToCardFromCheckItem'
 			}
 		}[key]
 	end
