@@ -26,5 +26,28 @@ module Trello
 
 			it {should be_kind_of(Trello::Action)}
 		end
+
+		describe "#convert_from_action" do
+			
+			let(:c) { :convert_card }
+			let(:action) {Trello::Action.new action_details(c)}
+			
+			before :each do
+				allow_get "/actions/abcdef123456789123456789", anything(), action_payload(c)
+			end
+
+			it {expect(Trello::ConvertToCardAction.convert_from_action action).not_to be_nil}
+			it {expect(Trello::ConvertToCardAction.convert_from_action action).to be_kind_of(Trello::ConvertToCardAction)}
+
+			context "with valid convert action" do
+				let(:c) { :convert_card }
+				it {expect(Trello::ConvertToCardAction.convert_from_action action).to be_valid}
+			end
+
+			context "with invalid action" do
+				let(:c) { :move_card }
+				it {expect(Trello::ConvertToCardAction.convert_from_action action).not_to be_valid}
+			end
+		end
 	end
 end

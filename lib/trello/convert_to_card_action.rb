@@ -6,6 +6,10 @@ module Trello
 		register_attributes :source_card_id
 		validates_presence_of :source_card_id
 
+		def self.convert_from_action action
+			client.get("/actions/#{action.id}").json_into(self)
+		end
+
 		def update_fields(fields)
 			super fields
 			if fields['data'].include? "cardSource" 
