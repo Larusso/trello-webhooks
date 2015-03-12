@@ -105,6 +105,26 @@ module Helpers
 	end
 
 	def action_details key
+		d = {
+				'id' => 'abcdef123456789123456789',
+				'idMemberCreator' => 'abcdef123456789123456789',
+				'data'=> {
+					'card' => {
+						'id' => 'abcdef123456789123456789',
+						'name' => 'Bytecode outputter'
+					},
+					'board' => {
+						'id' => '4ec54f2f73820a0dea0d1f0e',
+						'name' => 'Caribou VM'
+					},
+					'list' => {
+						'id' => '4ee238b034a81a757a05cda0',
+						'name' => 'TODO 0.1.1'
+					}
+				},
+				'date' => '2012-02-10T11:32:17Z',
+				'type' => 'createCard'
+			}
 		{
 			create_card: {
 				'id' => 'abcdef123456789123456789',
@@ -131,13 +151,13 @@ module Helpers
 				'idMemberCreator' => 'abcdef123456789123456789',
 				'data'=> {
 					'listAfter' => {
-        				"name"=> "todo 1.33.4",
-        				"id"=> "54eef8a54e22aeee50bcee3f"
-      				},
-      				"listBefore"=> {
-        				"name" => "Done",
-        				"id" => "53d77b7e8b272ed7c843a946"
-      				},
+						"name"=> "todo 1.33.4",
+						"id"=> "54eef8a54e22aeee50bcee3f"
+					},
+					"listBefore"=> {
+						"name" => "Done",
+						"id" => "53d77b7e8b272ed7c843a946"
+					},
 					'card' => {
 						'id' => 'abcdef123456789123456789',
 						'name' => 'Bytecode outputter'
@@ -147,8 +167,8 @@ module Helpers
 						'name' => 'Caribou VM'
 					},
 					"old" => {
-        				"idList" => "4ee238b034a81a757a05cda0"
-      				}
+						"idList" => "4ee238b034a81a757a05cda0"
+					}
 				},
 				'date' => '2012-02-10T11:32:17Z',
 				'type' => 'updateCard'
@@ -166,8 +186,8 @@ module Helpers
 						'name' => 'TODO 0.1.1'
 					},
 					"old" => {
-        				"name"=> "test"
-      				}
+						"name"=> "test"
+					}
 				},
 				'date' => '2012-02-10T11:32:17Z',
 				'type' => 'updateList'
@@ -177,13 +197,13 @@ module Helpers
 				'idMemberCreator' => 'abcdef123456789123456789',
 				'data'=> {
 					'listAfter' => {
-        				"name"=> "todo 1.33.4",
-        				"id"=> "54eef8a54e22aeee50bcee3f"
-      				},
-      				"listBefore"=> {
-        				"name" => "Done",
-        				"id" => "53d77b7e8b272ed7c843a946"
-      				},
+						"name"=> "todo 1.33.4",
+						"id"=> "54eef8a54e22aeee50bcee3f"
+					},
+					"listBefore"=> {
+						"name" => "Done",
+						"id" => "53d77b7e8b272ed7c843a946"
+					},
 					'card' => {
 						'id' => 'abcdef123456789123456789',
 						'name' => 'Bytecode outputter'
@@ -193,8 +213,8 @@ module Helpers
 						'name' => 'Caribou VM'
 					},
 					"old" => {
-        				"idList" => "4ee238b034a81a757a05cda0"
-      				}
+						"idList" => "4ee238b034a81a757a05cda0"
+					}
 				},
 				'date' => '2012-02-10T11:32:17Z',
 				'type' => 'updateCard'
@@ -204,15 +224,15 @@ module Helpers
 				'idMemberCreator' => 'abcdef123456789123456789',
 				'data'=> {
 					'cardSource' => {
-        				"shortLink" => "D8IsnJqS",
-        				"idShort" => 21,
-        				"name"=> "Test Card",
-        				"id"=> "54eef8a54e22aeee50bcee3f"
-      				},
-      				"list"=> {
-        				"name" => "Done",
-        				"id" => "53d77b7e8b272ed7c843a946"
-      				},
+						"shortLink" => "D8IsnJqS",
+						"idShort" => 21,
+						"name"=> "Test Card",
+						"id"=> "54eef8a54e22aeee50bcee3f"
+					},
+					"list"=> {
+						"name" => "Done",
+						"id" => "53d77b7e8b272ed7c843a946"
+					},
 					'card' => {
 						'id' => 'abcdef123456789123456789',
 						'name' => 'Bytecode outputter'
@@ -225,7 +245,7 @@ module Helpers
 				'date' => '2012-02-10T11:32:17Z',
 				'type' => 'convertToCardFromCheckItem'
 			}
-		}[key]
+		}.fetch(key,d)
 	end
 
 	def action_payload key
