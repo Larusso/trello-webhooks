@@ -20,7 +20,7 @@ module Hooks
 
 		def card
 			begin
-				@action.card
+				@card ||= @action.card
 			rescue
 				nil
 			end
@@ -28,7 +28,7 @@ module Hooks
 
 		def list
 			begin
-				@action.list
+				@list ||= @action.list
 			rescue
 				nil
 			end
@@ -36,7 +36,7 @@ module Hooks
 
 		def board
 			begin
-				@action.board
+				@board ||= @action.board
 			rescue
 				nil
 			end
