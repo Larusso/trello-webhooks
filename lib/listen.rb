@@ -134,32 +134,6 @@ class TrelloHookListener < Sinatra::Base
     Hooks::AutoVersion.new(push['action']).execute
   end
 
-  ############################################################
-  ## auto version
-  ############################################################
-
-  head '/convert_check_item_to_sub_task' do
-    return 200
-  end
-
-  post '/convert_check_item_to_sub_task' do
-    request.body.rewind
-    payload_body = request.body.read
-    verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK'], ENV['TRELLO_SECRET']
-    
-    if params[:payload]
-      push = JSON.parse(params[:payload])
-    else
-      push = JSON.parse payload_body
-    end
-
-    begin
-      Hooks::ConvertCheckItemToSubTask.new(push['action']).execute
-    rescue
-      200
-    end
-  end
-
   def verify_signature payload_body, callbackURL, hash, secret
     content = payload_body + callbackURL
 

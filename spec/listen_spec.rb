@@ -13,14 +13,6 @@ describe TrelloHookListener do
 	
 	subject {TrelloHookListener.new!}
 
-	describe "/convert_check_item_to_sub_task" do
-
-		context "when using method head" do
-			let!(:end_point) { head "/convert_check_item_to_sub_task" }
-			it { expect(last_response).to be_ok }
-		end
-	end
-
 	describe ".get_hook_class" do
 		it "returns hook class" do
 			expect(subject.get_hook_class('auto_version')).to eql(Hooks::AutoVersion)
