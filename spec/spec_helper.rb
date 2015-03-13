@@ -297,4 +297,38 @@ module Helpers
 	def lists_payload key
 		JSON.generate(lists_details(key))
 	end
+
+	def checklists_details key=:default
+	    [{
+	    	'id'         => 'abcdef123456789123456789',
+	    	'name'       => 'Test Checklist',
+	    	'desc'       => 'A marvelous little checklist',
+	    	'closed'     => false,
+	     	'position'   => 16384,
+	      	'url'        => 'https://trello.com/blah/blah',
+	      	'idBoard'    => 'abcdef123456789123456789',
+	      	'idList'     => 'abcdef123456789123456789',
+	      	'idMembers'  => ['abcdef123456789123456789'],
+	      	'checkItems' => { 'id' => 'ghijk987654321' }
+	    }]
+	end
+
+	def named_checklist name
+		{
+	    	'id'         => 'namedabcdef123456789123456789',
+	    	'name'       => name,
+	    	'desc'       => 'A marvelous little checklist',
+	    	'closed'     => false,
+	     	'position'   => 16384,
+	      	'url'        => 'https://trello.com/blah/blah',
+	      	'idBoard'    => 'abcdef123456789123456789',
+	      	'idList'     => 'abcdef123456789123456789',
+	      	'idMembers'  => ['abcdef123456789123456789'],
+	      	'checkItems' => { 'id' => 'ghijk987654321' }
+	    }
+	end
+
+  	def checklists_payload key=:default
+    	JSON.generate(checklists_details key)
+  	end
 end

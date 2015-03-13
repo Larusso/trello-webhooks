@@ -2,8 +2,8 @@ module Hooks
 	module CardHelper
 
 		module_function
-		def task_group? card
-			card.labels.map {|label| label.name.downcase}.include?("task group")
+		def task_group? card, name="sub tasks"
+			card.checklists.map {|checklists| checklists.name.downcase}.include?(name)
 		end
 	end
 end
