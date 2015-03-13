@@ -1,5 +1,6 @@
 require_relative 'base'
 require_relative 'hook_helper'
+require_relative '../trello/convert_to_card_action'
 
 module Hooks
 	class ConvertCheckItemToSubTask < Base
