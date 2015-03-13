@@ -59,29 +59,42 @@ module Hooks
 		end
 
 		describe '.execute' do
+			shared_examples_for "convert check item to sub task" do
+				let!(:init) {
+					allow_put "/cards/abcdef123456789123456789", anything, "nothing"
+					allow_post "/checklists/namedabcdef123456789123456789/checkItems", anything, "nothing"
+				}
+
+				it "adds checklist item to source card" do
+					expect(client).to receive(:post).with("/checklists/namedabcdef123456789123456789/checkItems", hash_including(name: "https://trello.com/c/abcdef12", checked: false))
+					subject.execute
+				end
+
+				it "adds a link to source card to converted card" do
+					expected_card = Trello::Card.new cards_details(:move_card)
+					expected_description = "parent task: #{expected_card.short_url}\n#{expected_card.desc}"
+
+					expect(client).to receive(:put).with("/cards/#{expected_card.id}", {desc: expected_description})
+					subject.execute
+				end
+			end
 
 			before :each do
 				allow_get "/cards/54eef8a54e22aeee50bcee3f", anything(), cards_payload(:create_card)
-				allow_get "/actions/abcdef123456789123456789/card", anything(), cards_payload(:create_card)
+				allow_get "/actions/abcdef123456789123456789/card", anything(), cards_payload(:move_card)
 				allow_get "/cards/abcdef123456789123456789/checklists", anything(), check_list_payload
 			end
 
 			context 'when source card hash one sub task' do
 				let(:check_list_payload) {JSON.generate( [named_checklist("sub tasks")])}
 				
-				it "adds checklist item to source card" do
-					expect(client).to receive(:post).with("/checklists/namedabcdef123456789123456789/checkItems", hash_including(name: "https://trello.com/c/abcdef12", checked: false))
-					subject.execute
-				end
+				it_behaves_like "convert check item to sub task"
 			end
 
 			context 'when source card hash many sub task' do
 				let(:check_list_payload) {JSON.generate(checklists_details + [named_checklist("sub tasks")])}
-				
-				it "adds checklist item to source card" do
-					expect(client).to receive(:post).with("/checklists/namedabcdef123456789123456789/checkItems", hash_including(name: "https://trello.com/c/abcdef12", checked: false))
-					subject.execute
-				end
+
+				it_behaves_like "convert check item to sub task"
 			end
 
 			context 'when source card has no sub tasks' do
@@ -89,6 +102,11 @@ module Hooks
 
 				it "adds no checklist item to source card" do
 					expect(client).not_to receive(:post).with("/checklists/abcdef123456789123456789/checkItems", anything )
+					subject.execute
+				end
+
+				it "adds no link to source card to converted card" do
+					expect(client).not_to receive(:put).with("/cards/abcdef123456789123456789", anything )
 					subject.execute
 				end
 			end

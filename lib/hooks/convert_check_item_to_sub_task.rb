@@ -24,10 +24,16 @@ module Hooks
 
 		def execute
 			if task_group? action.source_card, "sub tasks"
+				
+				#add converted card as checklist item to source card
 				checklist_names = action.source_card.checklists.map { |checklist| checklist.name.downcase }
 				index = checklist_names.find_index("sub tasks")
 				checklist = action.source_card.checklists[index]
 				checklist.add_item(card.short_url)
+
+				#add link to source card to converted card description
+				card.desc="parent task: #{action.source_card.short_url}\n#{card.desc}"
+				card.update!
 			end
 		end
 	end

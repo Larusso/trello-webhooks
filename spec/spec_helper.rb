@@ -18,6 +18,22 @@ module Helpers
 			and_return return_value
 	end
 
+	def allow_put url, params, return_value
+		allow(client).to receive(:put).with(url).
+			and_return return_value
+
+		allow(client).to receive(:put).with(url, params).
+			and_return return_value
+	end
+
+	def allow_post url, params, return_value
+		allow(client).to receive(:post).with(url).
+			and_return return_value
+
+		allow(client).to receive(:post).with(url, params).
+			and_return return_value
+	end
+
 	def user_details
 		{
 			'id' => 'abcdef123456789123456789',
