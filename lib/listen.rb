@@ -13,6 +13,12 @@ require 'bundler/setup'
 require 'base64'
 require 'openssl'
 
+class String
+  def camelize
+    self.to_s.split(/[-_]/).collect!{ |w| w.capitalize }.join
+  end
+end
+
 class TrelloHookListener < Sinatra::Base
 
   ############################################################
@@ -53,6 +59,35 @@ class TrelloHookListener < Sinatra::Base
 	verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK'], ENV['TRELLO_SECRET']
 
     return 200
+  end
+
+  def get_hook_class hook_name
+    return Object.const_get "Hooks::#{hook_name.camelize}"
+  rescue
+    halt 500, "Hook not found"
+  end
+
+  head '/hook/:name' do | hook_name |
+    get_hook_class(hook_name)
+  end
+
+  post '/hook/:name' do | hook_name |
+    clazz = get_hook_class(hook_name)
+    request.body.rewind
+    payload_body = request.body.read
+    verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK'], ENV['TRELLO_SECRET']
+    
+    if params[:payload]
+      push = JSON.parse(params[:payload])
+    else
+      push = JSON.parse payload_body
+    end
+
+    begin
+      cla.new(push['action']).execute
+    rescue
+      200
+    end
   end
 
   ############################################################
@@ -117,7 +152,7 @@ class TrelloHookListener < Sinatra::Base
     else
       push = JSON.parse payload_body
     end
-    
+
     begin
       Hooks::ConvertCheckItemToSubTask.new(push['action']).execute
     rescue

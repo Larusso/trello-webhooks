@@ -21,6 +21,24 @@ describe TrelloHookListener do
 		end
 	end
 
+	describe "head /hook/:name" do
+		
+		it "halts with 500 for an unknown hook" do
+			head "/hook/anyhook"
+			expect(last_response).not_to be_ok
+		end
+
+		it "response is ok for a known hook" do
+			head "/hook/auto_version"
+			expect(last_response).to be_ok
+		end
+
+		it "response is ok for a known hook" do
+			head "/hook/auto-version"
+			expect(last_response).to be_ok
+		end
+	end
+
 	describe '.verify_signature' do
 		context 'when signature is not equal' do
 			let(:hash) {"1234567890abcdef"}
