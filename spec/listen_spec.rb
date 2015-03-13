@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require_relative 'spec_helper'
+require_relative 'spec_rack_helper'
 require 'listen'
 require 'base64'
 require 'openssl'
@@ -11,6 +12,14 @@ describe TrelloHookListener do
 	let(:trello_key) {"dev_key"}
 	
 	subject {TrelloHookListener.new!}
+
+	describe "/convert_check_item_to_sub_task" do
+
+		context "when using method head" do
+			let!(:end_point) { head "/convert_check_item_to_sub_task" }
+			it { expect(last_response).to be_ok }
+		end
+	end
 
 	describe '.verify_signature' do
 		context 'when signature is not equal' do
