@@ -84,7 +84,7 @@ class TrelloHookListener < Sinatra::Base
     end
 
     begin
-      cla.new(push['action']).execute
+      clazz.new(push['action']).execute
     rescue
       200
     end
