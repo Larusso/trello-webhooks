@@ -6,6 +6,7 @@ module Hooks
 
 		let(:action) 	{Trello::Action.new action_details(c)}
 		let(:client) 	{Trello.client}
+		let(:board) 	{Trello::Board.new boards_details}
 		let(:c) 		{:convert_card}
 
 		subject {Hooks::ConvertCheckItemToSubTask.new action}
@@ -63,6 +64,10 @@ module Hooks
 				let!(:init) {
 					allow_put "/cards/abcdef123456789123456789", anything, "nothing"
 					allow_post "/checklists/namedabcdef123456789123456789/checkItems", anything, "nothing"
+					allow_post "/labels", anything, JSON.generate(version_label("nothing"))
+					allow_post "/cards/abcdef123456789123456789/idLabels", anything, "nothing"
+					allow_get "/actions/abcdef123456789123456789/board", anything() , boards_payload
+					allow_get "/boards/abcdef123456789123456789/labels", anything() , board_labels_payload(:create_card)
 				}
 
 				it "adds checklist item to source card" do
@@ -75,6 +80,11 @@ module Hooks
 					expected_description = "parent task: #{expected_card.short_url}\n#{expected_card.desc}"
 
 					expect(client).to receive(:put).with("/cards/#{expected_card.id}", {desc: expected_description})
+					subject.execute
+				end
+
+				it "adds a label with task:card name" do
+					expect(client).to receive(:post).with("/cards/abcdef123456789123456789/idLabels", anything)
 					subject.execute
 				end
 			end

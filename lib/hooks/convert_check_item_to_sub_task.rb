@@ -34,6 +34,19 @@ module Hooks
 				#add link to source card to converted card description
 				card.desc="parent task: #{action.source_card.short_url}\n#{card.desc}"
 				card.update!
+
+				#add label to converted card
+				label_names = board.labels(false).map {|label| label.name}
+				index = label_names.find_index("task:#{action.source_card.name}")
+				label = nil
+				
+				if index.nil?
+					label = Trello::Label.create name:action.source_card.name, board_id:board.id, color:nil
+				else
+					label = board.labels(false)[index]
+				end
+
+				card.add_label label
 			end
 		end
 	end
