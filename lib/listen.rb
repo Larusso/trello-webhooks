@@ -62,7 +62,7 @@ class TrelloHookListener < Sinatra::Base
   end
 
   def get_hook_class hook_name
-    return Object.const_get "Hooks::#{hook_name.camelize}"
+    return Hooks.const_get hook_name.camelize
   rescue
     halt 500, "Hook not found"
   end

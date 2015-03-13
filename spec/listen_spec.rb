@@ -21,6 +21,12 @@ describe TrelloHookListener do
 		end
 	end
 
+	describe ".get_hook_class" do
+		it "returns hook class" do
+			expect(subject.get_hook_class('auto_version')).to eql(Hooks::AutoVersion)
+		end
+	end
+
 	describe "head /hook/:name" do
 		
 		it "halts with 500 for an unknown hook" do
