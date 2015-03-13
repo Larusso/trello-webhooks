@@ -117,8 +117,12 @@ class TrelloHookListener < Sinatra::Base
     else
       push = JSON.parse payload_body
     end
-
-    Hooks::ConvertCheckItemToSubTask.new(push['action']).execute
+    
+    begin
+      Hooks::ConvertCheckItemToSubTask.new(push['action']).execute
+    rescue
+      200
+    end
   end
 
   def verify_signature payload_body, callbackURL, hash, secret
