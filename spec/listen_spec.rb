@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require_relative 'spec_helper'
+require_relative 'spec_rack_helper'
 require 'listen'
 require 'base64'
 require 'openssl'
@@ -11,6 +12,30 @@ describe TrelloHookListener do
 	let(:trello_key) {"dev_key"}
 	
 	subject {TrelloHookListener.new!}
+
+	describe ".get_hook_class" do
+		it "returns hook class" do
+			expect(subject.get_hook_class('auto_version')).to eql(Hooks::AutoVersion)
+		end
+	end
+
+	describe "head /hook/:name" do
+		
+		it "halts with 500 for an unknown hook" do
+			head "/hook/anyhook"
+			expect(last_response).not_to be_ok
+		end
+
+		it "response is ok for a known hook" do
+			head "/hook/auto_version"
+			expect(last_response).to be_ok
+		end
+
+		it "response is ok for a known hook" do
+			head "/hook/auto-version"
+			expect(last_response).to be_ok
+		end
+	end
 
 	describe '.verify_signature' do
 		context 'when signature is not equal' do
