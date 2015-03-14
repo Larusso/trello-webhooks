@@ -22,26 +22,31 @@ module Hooks
 			@data = @action.data
 		end
 
-		def execute
-			if task_group? action.source_card, "sub tasks"
-				
-				#add converted card as checklist item to source card
-				checklist_names = action.source_card.checklists.map { |checklist| checklist.name.downcase }
-				index = checklist_names.find_index("sub tasks")
-				checklist = action.source_card.checklists[index]
-				checklist.add_item(card.short_url)
+		def source_card
+			begin
+				@source_card ||= @action.source_card
+			rescue
+				nil
+			end
+		end
 
+		def execute
+			sub_tasks = find_checklist(source_card, "sub tasks")
+
+			unless sub_tasks.nil?
+				#add converted card as checklist item to source card
+				sub_tasks.add_item card.short_url
+				
 				#add link to source card to converted card description
-				card.desc="parent task: #{action.source_card.short_url}\n#{card.desc}"
+				card.desc="parent task: #{source_card.short_url}\n#{card.desc}"
 				card.update!
 
 				#add label to converted card
-				label_names = board.labels(false).map {|label| label.name}
-				index = label_names.find_index("task:#{action.source_card.name}")
-				label = nil
+				label_name = "task:#{source_card.name}"
+				label = find_label board, label_name
 				
-				if index.nil?
-					label = Trello::Label.create name:action.source_card.name, board_id:board.id, color:nil
+				if label.nil?
+					label = Trello::Label.create name:label_name, board_id:board.id, color:nil
 				else
 					label = board.labels(false)[index]
 				end
