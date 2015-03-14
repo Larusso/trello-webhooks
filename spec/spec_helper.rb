@@ -1,9 +1,6 @@
 require 'coveralls'
 Coveralls.wear!
 
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
-
 Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].each {|f| require f}
 
 require 'hooks'
