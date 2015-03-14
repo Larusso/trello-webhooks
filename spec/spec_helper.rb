@@ -1,5 +1,6 @@
 require 'simplecov'
 require 'coveralls'
+require "codeclimate-test-reporter"
 
 SimpleCov.formatter = Coveralls::SimpleCov::Formatter
 SimpleCov.start do
@@ -7,6 +8,7 @@ SimpleCov.start do
 end
 
 Coveralls.wear!
+CodeClimate::TestReporter.start
 
 Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].each {|f| require f}
 

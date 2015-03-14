@@ -28,6 +28,8 @@ GEM
       ZenTest (>= 4.4.1)
     bson (2.3.0)
     builder (3.2.2)
+    codeclimate-test-reporter (0.4.7)
+      simplecov (>= 0.7.1, < 1.0.0)
     connection_pool (2.1.2)
     coveralls (0.7.11)
       multi_json (~> 1.10)
@@ -111,6 +113,7 @@ PLATFORMS
 
 DEPENDENCIES
   autotest
+  codeclimate-test-reporter
   coveralls
   fuubar
   mongoid (~> 4.0.0)
