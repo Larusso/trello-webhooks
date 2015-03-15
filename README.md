@@ -1,3 +1,3 @@
 # trello-webhooks
 
-[![Build Status](https://travis-ci.org/Larusso/trello-webhooks.svg?branch=master)](https://travis-ci.org/Larusso/trello-webhooks) [![Code Climate](https://codeclimate.com/github/Larusso/trello-webhooks/badges/gpa.svg)](https://codeclimate.com/github/Larusso/trello-webhooks) [![Coverage Status](https://coveralls.io/repos/Larusso/trello-webhooks/badge.svg?branch=master)](https://coveralls.io/r/Larusso/trello-webhooks?branch=coveralls_test)
+[![Build Status](https://travis-ci.org/Larusso/trello-webhooks.svg?branch=master)](https://travis-ci.org/Larusso/trello-webhooks) [![Code Climate](https://codeclimate.com/github/Larusso/trello-webhooks/badges/gpa.svg)](https://codeclimate.com/github/Larusso/trello-webhooks) [![Test Coverage](https://codeclimate.com/github/Larusso/trello-webhooks/badges/coverage.svg)](https://codeclimate.com/github/Larusso/trello-webhooks)
