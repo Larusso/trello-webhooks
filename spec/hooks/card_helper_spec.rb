@@ -38,7 +38,45 @@ module Hooks
 			end
 		end
 
-		describe ".find_sub_task_list" do
+		describe ".find_checklist" do
+			let(:payload) { JSON.generate(checklists_details(1) + [named_checklist(actual_name)]) }
+
+			shared_examples_for "find checklist" do
+				it { expect(CardHelper.find_checklist card, check_name).not_to be_nil }
+				it { expect(CardHelper.find_checklist card, check_name).to be_kind_of(Trello::Checklist) }
+				it { expect(CardHelper.find_checklist(card, check_name).name).to eql(actual_name) }
+			end
+
+			let(:card) 	{Trello::Card.new cards_details(:create_card)}
+			let!(:init) {allow_get "/cards/abcdef123456789123456789/checklists", anything(), payload}
+
+			context "when checklist is available" do
+				let(:check_name) {"test list"}
+				let(:actual_name) {"test list"}
+				
+				it_behaves_like "find checklist"
+			end
+
+			context "when checklist is available mixcase" do
+				let(:check_name) {"test list"}
+				let(:actual_name) {"TeSt LiSt"}
+				
+				it_behaves_like "find checklist"
+			end
+
+			context "when checklist is available uppercase" do
+				let(:check_name) {"test list"}
+				let(:actual_name) {"TEST LIST"}
+				
+				it_behaves_like "find checklist"
+			end
+
+			context "when checklist is not available" do
+				let(:check_name) {"unavailable"}
+				let(:actual_name) {"test list"}
+
+				it { expect(CardHelper.find_checklist card, check_name).to be_nil }
+			end
 		end
 	end
 end
