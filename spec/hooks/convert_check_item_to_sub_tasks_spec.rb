@@ -15,6 +15,7 @@ module Hooks
 			logger_mock = double('Logger').as_null_object
     		allow(Hooks).to receive(:logger).and_return(logger_mock)
     		allow_get "/actions/abcdef123456789123456789", anything(), action_payload(c)
+    		allow_get "/actions/abcdef123456789123456789/card", anything(), cards_payload(c)
     	end
 
     	describe '#new' do
@@ -59,8 +60,6 @@ module Hooks
     		end
 		end
 
-		
-
 		describe '.execute' do
 			shared_examples_for "convert check item to sub task" do
 				let!(:init) {
@@ -89,11 +88,25 @@ module Hooks
 					expect(client).to receive(:post).with("/cards/abcdef123456789123456789/idLabels", anything)
 					subject.execute
 				end
+
+				context "when board has label" do
+					let!(:setup) {allow_get "/boards/abcdef123456789123456789/labels", anything(), JSON.generate( board_labels(1) + [version_label("task:do stuff")])}
+					it "uses label already on board and sets it to the card" do
+						expect(client).not_to receive(:post).with("/labels", anything)
+						subject.execute
+					end
+				end
+
+				context "when board has no label" do
+					it "creates new label on board" do
+						expect(client).to receive(:post).with("/labels", hash_including(name: "task:do stuff"))
+						subject.execute
+					end
+				end
 			end
 
 			before :each do
 				allow_get "/cards/54eef8a54e22aeee50bcee3f", anything(), cards_payload(:create_card)
-				allow_get "/actions/abcdef123456789123456789/card", anything(), cards_payload(:move_card)
 				allow_get "/cards/abcdef123456789123456789/checklists", anything(), check_list_payload
 			end
 
