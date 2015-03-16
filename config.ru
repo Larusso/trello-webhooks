@@ -4,7 +4,7 @@ require 'bundler'
 
 Bundler.require
 
-require 'listen'
+require 'trello_hook_listener'
 
 $stdout.sync = true
 logger = Logger.new(STDOUT)
