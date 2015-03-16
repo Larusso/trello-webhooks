@@ -1,3 +1,5 @@
+require 'logger'
+
 module Hooks
 	module CardHelper
 
@@ -24,6 +26,7 @@ module Hooks
 			label = find_label board, label_name
 			
 			if label.nil? && force_create
+				Hooks.logger.info("board needs new label")
 				label = Trello::Label.create name:label_name, board_id:board.id, color:nil
 			end
 

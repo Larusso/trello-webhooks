@@ -18,6 +18,10 @@ module Hooks
 			@data = @action.data
 		end
 
+		def card= value
+			@card = value
+		end
+		
 		def card
 			begin
 				@card ||= @action.card

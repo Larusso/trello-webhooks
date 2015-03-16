@@ -88,8 +88,8 @@ module Hooks
 				end
 
 				describe '.card_version_labels' do
-					it { expect(subject.card_version_labels subject.card).not_to be_nil}
-					it { expect(subject.card_version_labels(subject.card).count).to eql(2)}
+					it { expect(subject.card_version_labels).not_to be_nil}
+					it { expect(subject.card_version_labels.count).to eql(2)}
 				end
 			end
 
