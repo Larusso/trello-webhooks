@@ -69,12 +69,12 @@ module Hooks
 		end
 
 		def board_has_label? name
-			board.labels(false).map{ |label| label.name }.include? name
+			board.labels.map{ |label| label.name }.include? name
 		end
 
 		def find_label name
 			label = nil
-			board.labels(false).each { |l|
+			board.labels.each { |l|
 				label = l if l.name.eql? name
 				break if label
 			}
@@ -86,7 +86,7 @@ module Hooks
 		end
 
 		def board_labels
-			labels = board.labels false
+			labels = board.labels
 		end
 
 		def card_version_labels card

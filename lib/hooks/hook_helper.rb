@@ -14,7 +14,7 @@ module Hooks
 		end
 
 		def find_label board, name
-			board.labels(false).each do |label|
+			board.labels.each do |label|
 				return label if label.name.eql? name
 			end
 			nil
