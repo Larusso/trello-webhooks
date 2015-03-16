@@ -81,14 +81,6 @@ module Hooks
 			label
 		end
 
-		def card_labels card
-			labels = card.labels
-		end
-
-		def board_labels
-			labels = board.labels
-		end
-
 		def card_version_labels card
 			card.labels.select { |label|
 				!(label.name =~ VERSION_PATTERN).nil?
@@ -96,8 +88,7 @@ module Hooks
 		end
 
 		def board_version_labels
-			labels = board_labels
-			labels.select {|label|
+			board.labels.select {|label|
 				!(label.name =~ VERSION_PATTERN).nil?
 			}
 		end

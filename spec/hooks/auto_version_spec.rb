@@ -81,11 +81,6 @@ module Hooks
 					it { expect(subject.board_version_labels.count).to eql(2)}
 				end
 
-				describe '.board_labels' do
-					it { expect(subject.board_labels).not_to be_nil}
-					it { expect(subject.board_labels.count).to eql(5)}
-				end
-
 				describe '.card_has_label?' do
 					it { expect(subject.card_has_label? subject.card, version).to be_boolean}
 					it { expect(subject.card_has_label? subject.card, version).to eq(false)}
@@ -101,11 +96,6 @@ module Hooks
 				describe '.card_version_labels' do
 					it { expect(subject.card_version_labels subject.card).not_to be_nil}
 					it { expect(subject.card_version_labels(subject.card).count).to eql(2)}
-				end
-
-				describe '.card_labels' do
-					it { expect(subject.card_labels subject.card).not_to be_nil}
-					it { expect(subject.card_labels(subject.card).count).to eql(5)}
 				end
 			end
 
