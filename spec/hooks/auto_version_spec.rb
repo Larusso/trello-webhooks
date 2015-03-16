@@ -87,12 +87,6 @@ module Hooks
 					it { expect(subject.card_has_label? subject.card, '4.5.6').to eq(true)}
 				end
 
-				describe '.find_label' do
-					it { expect(subject.find_label version).to be_nil}
-					it { expect(subject.find_label '4.5.6').not_to be_nil}
-					it { expect(subject.find_label '4.5.6').to be_kind_of(Trello::Label)}
-				end
-
 				describe '.card_version_labels' do
 					it { expect(subject.card_version_labels subject.card).not_to be_nil}
 					it { expect(subject.card_version_labels(subject.card).count).to eql(2)}

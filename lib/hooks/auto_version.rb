@@ -1,9 +1,11 @@
 require_relative 'base'
+require_relative 'hook_helper'
 
 require 'logger'
 
 module Hooks
 	class AutoVersion < Base
+		include CardHelper
 
 		VERSION_PATTERN = %r!\d+\.\d+(\.\d+)?!
 		VERSION_GROUP_PATTERN = /(\d+\.\d+(\.\d+)?(\.[\w\d]+)?)/
@@ -38,7 +40,7 @@ module Hooks
 					Hooks.logger.info("board needs new label")
 					label_to_add = Trello::Label.create name: version, board_id: board.id, color: Trello::Label.label_colours.sample
 				else
-					label_to_add = find_label version
+					label_to_add = find_label board, version
 				end
 
 				id_labels = card_version_labels(card)
@@ -70,15 +72,6 @@ module Hooks
 
 		def board_has_label? name
 			board.labels.map{ |label| label.name }.include? name
-		end
-
-		def find_label name
-			label = nil
-			board.labels.each { |l|
-				label = l if l.name.eql? name
-				break if label
-			}
-			label
 		end
 
 		def card_version_labels card
