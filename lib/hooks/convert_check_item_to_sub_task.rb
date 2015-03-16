@@ -23,11 +23,7 @@ module Hooks
 		end
 
 		def source_card
-			begin
-				@source_card ||= @action.source_card
-			rescue
-				nil
-			end
+			@source_card ||= @action.source_card
 		end
 
 		def execute
