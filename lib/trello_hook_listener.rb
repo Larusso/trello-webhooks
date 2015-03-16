@@ -55,16 +55,9 @@ class TrelloHookListener < Sinatra::Base
       push = JSON.parse payload_body
     end
 	
-	puts "hash: #{request.env['HTTP_X_TRELLO_WEBHOOK']}"
-	verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK'], ENV['TRELLO_SECRET']
-
-    return 200
-  end
-
-  def get_hook_class hook_name
-    return Hooks.const_get hook_name.camelize
-  rescue
-    halt 500, "Hook not found"
+    puts "hash: #{request.env['HTTP_X_TRELLO_WEBHOOK']}"
+    verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK'], ENV['TRELLO_SECRET']
+    200
   end
 
   head '/hook/:name' do | hook_name |
@@ -90,48 +83,10 @@ class TrelloHookListener < Sinatra::Base
     end
   end
 
-  ############################################################
-  ## auto assign
-  ############################################################
-
-  head '/auto-assign' do
-    return 200
-  end
-
-  post '/auto-assign' do
-    request.body.rewind
-    payload_body = request.body.read
-    verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK'], ENV['TRELLO_SECRET']
-    
-    if params[:payload]
-      push = JSON.parse(params[:payload])
-    else
-      push = JSON.parse payload_body
-    end
-
-    Hooks::AutoAssign.new(push['action']).execute
-  end
-
-  ############################################################
-  ## auto version
-  ############################################################
-
-  head '/auto-version' do
-    return 200
-  end
-
-  post '/auto-version' do
-    request.body.rewind
-    payload_body = request.body.read
-    verify_signature payload_body, request.url, request.env['HTTP_X_TRELLO_WEBHOOK'], ENV['TRELLO_SECRET']
-    
-    if params[:payload]
-      push = JSON.parse(params[:payload])
-    else
-      push = JSON.parse payload_body
-    end
-
-    Hooks::AutoVersion.new(push['action']).execute
+  def get_hook_class hook_name
+    return Hooks.const_get hook_name.camelize
+  rescue
+    halt 500, "Hook not found"
   end
 
   def verify_signature payload_body, callbackURL, hash, secret

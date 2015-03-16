@@ -23,11 +23,7 @@ module Hooks
 		end
 
 		def source_card
-			begin
-				@source_card ||= @action.source_card
-			rescue
-				nil
-			end
+			@source_card ||= @action.source_card
 		end
 
 		def execute
@@ -42,16 +38,7 @@ module Hooks
 				card.update!
 
 				#add label to converted card
-				label_name = "task:#{source_card.name}"
-				label = find_label board, label_name
-				
-				if label.nil?
-					label = Trello::Label.create name:label_name, board_id:board.id, color:nil
-				else
-					label = board.labels(false)[index]
-				end
-
-				card.add_label label
+				add_label_with_name "task:#{source_card.name}", true
 			end
 		end
 	end

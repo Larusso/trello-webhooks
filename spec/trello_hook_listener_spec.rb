@@ -2,7 +2,7 @@
 
 require_relative 'spec_helper'
 require_relative 'spec_rack_helper'
-require 'listen'
+
 require 'base64'
 require 'openssl'
 

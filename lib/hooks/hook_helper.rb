@@ -14,7 +14,20 @@ module Hooks
 		end
 
 		def find_label board, name
+			board.labels(false).each do |label|
+				return label if label.name.eql? name
+			end
+			nil
+		end
 
+		def add_label_with_name label_name, force_create=false
+			label = find_label board, label_name
+			
+			if label.nil? && force_create
+				label = Trello::Label.create name:label_name, board_id:board.id, color:nil
+			end
+
+			card.add_label label unless label.nil?
 		end
 	end
 end

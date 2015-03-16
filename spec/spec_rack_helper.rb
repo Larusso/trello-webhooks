@@ -1,8 +1,7 @@
 # spec/spec_helper.rb
 require 'rack/test'
 require 'rspec'
-
-require 'listen'
+require 'trello_hook_listener'
 
 ENV['RACK_ENV'] = 'test'
 
