@@ -27,10 +27,7 @@ module Hooks
 			allow_get "/members/abcdef123456789123456789", anything, JSON.generate(user_details)
 		end
 
-		context 'when creating card in version list' do
-			let(:c) {:create_card}
-			let(:version) {'1.22.1'}
-
+		shared_examples_for "create card" do
 			describe "#new" do
 				it {expect(subject.action).not_to be_nil}
 
@@ -136,6 +133,20 @@ module Hooks
 					end
 				end
 			end
+		end
+
+		context 'when creating card in version list' do
+			let(:c) {:create_card}
+			let(:version) {'1.22.1'}
+
+			it_behaves_like "create card"
+		end
+
+		context 'when converting card from checkitem in version list' do
+			let(:c) {:convert_card}
+			let(:version) {'1.22.1'}
+
+			it_behaves_like "create card"
 		end
 
 		context 'when moving card' do

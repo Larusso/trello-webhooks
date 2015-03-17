@@ -67,7 +67,7 @@ module Hooks
 		end
 
 		def card_created?
-			@action.type.eql? 'createCard'
+			@action.type.eql?('createCard') || @action.type.eql?('convertToCardFromCheckItem') 
 		end
 
 		def list_updated?
