@@ -62,12 +62,12 @@ module Hooks
 				end
 
 				describe '.list_version' do
-					it { expect(subject.list_version subject.list).to eq(version) }
-					it { expect(subject.list_version subject.list).to be_kind_of(String) }
+					it { expect(subject.list_version).to eq(version) }
+					it { expect(subject.list_version).to be_kind_of(String) }
 				end
 
 				describe '.versioned_list?' do	
-					it { expect(subject.versioned_list? subject.list).to eq(true) }
+					it { expect(subject.versioned_list?).to eq(true) }
 				end
 
 				describe '.board_has_label?' do
@@ -172,7 +172,7 @@ module Hooks
 			end
 
 			describe '.versioned_list?' do
-				it { expect(subject.versioned_list? subject.list).to eq(false) }
+				it { expect(subject.versioned_list?).to eq(false) }
 			end
 
 			describe '.execute' do
@@ -250,13 +250,13 @@ module Hooks
 			end
 
 			describe '.list_version' do
-				it { expect(subject.list_version subject.list).to eq(version) }
-				it { expect(subject.list_version subject.list).to be_kind_of(String) }
+				it { expect(subject.list_version).to eq(version) }
+				it { expect(subject.list_version).to be_kind_of(String) }
 			end
 
 			describe '.versioned_list?' do
-				it { expect(subject.versioned_list? subject.list).to be_boolean }
-				it { expect(subject.versioned_list? subject.list).to eq(true) }
+				it { expect(subject.versioned_list?).to be_boolean }
+				it { expect(subject.versioned_list?).to eq(true) }
 			end
 
 			describe '.execute' do

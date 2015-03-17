@@ -16,15 +16,15 @@ module Hooks
 			if (card_created? || card_moved?)
 				Hooks.logger.info("card created or moved")
 			
-				card_list = list.nil? ? card.list : list
-				if versioned_list? card_list
-					version = list_version card_list
+				self.list = list.nil? ? card.list : list
+				if versioned_list?
+					version = list_version
 					
 					Hooks.logger.info("put version #{version} to card #{card.id}")
 					update_card_version version
 				end
-			elsif (list_updated? && versioned_list?(list))
-				version = list_version list
+			elsif (list_updated? && versioned_list?)
+				version = list_version
 				list.cards.each { |list_card|
 					self.card = list_card
 					update_card_version version
@@ -44,7 +44,7 @@ module Hooks
 			end
 		end
 
-		def list_version list
+		def list_version
 			version = nil
 			unless list.nil?
 				m = list.name.match(VERSION_GROUP_PATTERN)
@@ -53,8 +53,8 @@ module Hooks
 			version
 		end
 
-		def versioned_list? list
-			!list_version(list).nil?
+		def versioned_list?
+			!list_version.nil?
 		end
 
 		def card_has_label? card, name

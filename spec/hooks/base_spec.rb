@@ -46,7 +46,7 @@ module Hooks
 		end
 
 		describe '.versioned_list?' do
-			it { expect(subject.versioned_list? subject.list).to be_boolean }
+			it { expect(subject.versioned_list?).to be_boolean }
 		end
 	end
 end

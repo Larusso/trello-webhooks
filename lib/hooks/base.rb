@@ -21,13 +21,17 @@ module Hooks
 		def card= value
 			@card = value
 		end
-		
+
 		def card
 			begin
 				@card ||= @action.card
 			rescue
 				nil
 			end
+		end
+
+		def list= value
+			@list = value
 		end
 
 		def list
