@@ -36,7 +36,7 @@ module Hooks
 			Hooks.logger.info("update card #{card.id}, version #{version}")
 
 			unless card_has_label? card, version
-				add_label_with_name version, true
+				add_label_with_name version, true, Trello::Label.label_colours.sample
 
 				card_version_labels.each {|label|
 					card.remove_label label unless label.name.eql?(version)

@@ -22,12 +22,12 @@ module Hooks
 			nil
 		end
 
-		def add_label_with_name label_name, force_create=false
+		def add_label_with_name label_name, force_create=false, color=nil
 			label = find_label board, label_name
 			
 			if label.nil? && force_create
 				Hooks.logger.info("board needs new label")
-				label = Trello::Label.create name:label_name, board_id:board.id, color:nil
+				label = Trello::Label.create name:label_name, board_id:board.id, color:color
 			end
 
 			card.add_label label unless label.nil?

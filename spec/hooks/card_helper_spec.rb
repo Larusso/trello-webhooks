@@ -78,9 +78,5 @@ module Hooks
 				it { expect(CardHelper.find_checklist card, check_name).to be_nil }
 			end
 		end
-
-		describe ".find_label" do
-			
-		end
 	end
 end

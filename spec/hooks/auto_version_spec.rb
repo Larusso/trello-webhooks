@@ -203,6 +203,18 @@ module Hooks
 
 						subject.execute
 					end
+
+					it 'executes' do
+						allow(client).to receive(:get).with("/boards/abcdef123456789123456789/labels").
+						and_return(board_labels_payload(c), JSON.generate(board_labels(c) + [version_label(version)]))
+
+						expect(client).to receive(:post).with("/labels", hash_excluding(color: nil)).
+						and_return(JSON.generate(version_label(version)))
+
+						allow(client).to receive(:delete).twice.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
+						allow(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
+						subject.execute
+					end
 				end
 		
 				context 'board has version label' do
