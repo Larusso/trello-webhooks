@@ -23,8 +23,11 @@ module Hooks
 			allow_get "/actions/abcdef123456789123456789/list", anything(), lists_payload(c)
 			allow_get "/actions/abcdef123456789123456789/board", anything() , boards_payload
 			allow_get "/boards/abcdef123456789123456789/labels", anything() , board_labels_payload(c)
-			allow_get "/cards/abcdef123456789123456789/labels", anything() , board_labels_payload(c)
+			#allow_get "/cards/abcdef123456789123456789/labels", anything() , board_labels_payload(c)
 			allow_get "/members/abcdef123456789123456789", anything, JSON.generate(user_details)
+
+			allow(client).to receive(:get).with("/cards/abcdef123456789123456789/labels").
+				and_return(board_labels_payload(c), JSON.generate(board_labels(c) + [version_label(version)]))
 		end
 
 		shared_examples_for "create card" do
@@ -100,7 +103,7 @@ module Hooks
 						and_return(JSON.generate(version_label(version)))
 
 						expect(client).to receive(:delete).twice.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -113,7 +116,7 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).to receive(:delete).twice.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -127,7 +130,7 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).not_to receive(:delete).with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -196,7 +199,7 @@ module Hooks
 						and_return(JSON.generate(version_label(version)))
 
 						expect(client).to receive(:delete).twice.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -209,7 +212,7 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).to receive(:delete).twice.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -223,7 +226,7 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).not_to receive(:delete).with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -238,6 +241,18 @@ module Hooks
 			before :each do
 				allow_get "/actions/abcdef123456789123456789/card", anything(), nil
 				allow_get "/lists/abcdef123456789123456789/cards", anything(), JSON.generate([cards_details(c),cards_details(c),cards_details(c)])
+
+				#super ugly setup here.
+				# we have 3 cards in a list
+				# each card will check for labels eg board_labels_payload(c)
+				# than add a label
+				# check the labels again eg JSON.generate(board_labels(c) + [version_label(version)])
+				# delete all cards with wrong version
+				# next iteration
+				allow(client).to receive(:get).with("/cards/abcdef123456789123456789/labels").
+				and_return(board_labels_payload(c), JSON.generate(board_labels(c) + [version_label(version)]),
+					board_labels_payload(c), JSON.generate(board_labels(c) + [version_label(version)]),
+					board_labels_payload(c), JSON.generate(board_labels(c) + [version_label(version)]))
 			end
 
 			describe "#new" do
@@ -280,7 +295,7 @@ module Hooks
 						and_return(JSON.generate(version_label(version)))
 
 						expect(client).to receive(:delete).exactly(6).times.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).exactly(3).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).exactly(3).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -293,7 +308,7 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).to receive(:delete).exactly(6).times.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).exactly(3).times.with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).exactly(3).times.with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -307,7 +322,7 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).not_to receive(:delete).with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end

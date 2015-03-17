@@ -39,7 +39,7 @@ module Hooks
 				add_label_with_name version, true
 
 				card_version_labels.each {|label|
-					card.remove_label label
+					card.remove_label label unless label.name.eql?(version)
 				}
 			end
 		end
