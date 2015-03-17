@@ -23,14 +23,14 @@ module Hooks
 			allow_get "/actions/abcdef123456789123456789/list", anything(), lists_payload(c)
 			allow_get "/actions/abcdef123456789123456789/board", anything() , boards_payload
 			allow_get "/boards/abcdef123456789123456789/labels", anything() , board_labels_payload(c)
-			allow_get "/cards/abcdef123456789123456789/labels", anything() , board_labels_payload(c)
+			#allow_get "/cards/abcdef123456789123456789/labels", anything() , board_labels_payload(c)
 			allow_get "/members/abcdef123456789123456789", anything, JSON.generate(user_details)
+
+			allow(client).to receive(:get).with("/cards/abcdef123456789123456789/labels").
+				and_return(board_labels_payload(c), JSON.generate(board_labels(c) + [version_label(version)]))
 		end
 
-		context 'when creating card in version list' do
-			let(:c) {:create_card}
-			let(:version) {'1.22.1'}
-
+		shared_examples_for "create card" do
 			describe "#new" do
 				it {expect(subject.action).not_to be_nil}
 
@@ -62,12 +62,12 @@ module Hooks
 				end
 
 				describe '.list_version' do
-					it { expect(subject.list_version subject.list).to eq(version) }
-					it { expect(subject.list_version subject.list).to be_kind_of(String) }
+					it { expect(subject.list_version).to eq(version) }
+					it { expect(subject.list_version).to be_kind_of(String) }
 				end
 
 				describe '.versioned_list?' do	
-					it { expect(subject.versioned_list? subject.list).to eq(true) }
+					it { expect(subject.versioned_list?).to eq(true) }
 				end
 
 				describe '.board_has_label?' do
@@ -81,31 +81,15 @@ module Hooks
 					it { expect(subject.board_version_labels.count).to eql(2)}
 				end
 
-				describe '.board_labels' do
-					it { expect(subject.board_labels).not_to be_nil}
-					it { expect(subject.board_labels.count).to eql(5)}
-				end
-
 				describe '.card_has_label?' do
 					it { expect(subject.card_has_label? subject.card, version).to be_boolean}
 					it { expect(subject.card_has_label? subject.card, version).to eq(false)}
 					it { expect(subject.card_has_label? subject.card, '4.5.6').to eq(true)}
 				end
 
-				describe '.find_label' do
-					it { expect(subject.find_label version).to be_nil}
-					it { expect(subject.find_label '4.5.6').not_to be_nil}
-					it { expect(subject.find_label '4.5.6').to be_kind_of(Trello::Label)}
-				end
-
 				describe '.card_version_labels' do
-					it { expect(subject.card_version_labels subject.card).not_to be_nil}
-					it { expect(subject.card_version_labels(subject.card).count).to eql(2)}
-				end
-
-				describe '.card_labels' do
-					it { expect(subject.card_labels subject.card).not_to be_nil}
-					it { expect(subject.card_labels(subject.card).count).to eql(5)}
+					it { expect(subject.card_version_labels).not_to be_nil}
+					it { expect(subject.card_version_labels.count).to eql(2)}
 				end
 			end
 
@@ -119,7 +103,7 @@ module Hooks
 						and_return(JSON.generate(version_label(version)))
 
 						expect(client).to receive(:delete).twice.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -132,7 +116,7 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).to receive(:delete).twice.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -146,12 +130,26 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).not_to receive(:delete).with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
 				end
 			end
+		end
+
+		context 'when creating card in version list' do
+			let(:c) {:create_card}
+			let(:version) {'1.22.1'}
+
+			it_behaves_like "create card"
+		end
+
+		context 'when converting card from checkitem in version list' do
+			let(:c) {:convert_card}
+			let(:version) {'1.22.1'}
+
+			it_behaves_like "create card"
 		end
 
 		context 'when moving card' do
@@ -188,7 +186,7 @@ module Hooks
 			end
 
 			describe '.versioned_list?' do
-				it { expect(subject.versioned_list? subject.list).to eq(false) }
+				it { expect(subject.versioned_list?).to eq(false) }
 			end
 
 			describe '.execute' do
@@ -201,8 +199,20 @@ module Hooks
 						and_return(JSON.generate(version_label(version)))
 
 						expect(client).to receive(:delete).twice.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
+						subject.execute
+					end
+
+					it 'executes' do
+						allow(client).to receive(:get).with("/boards/abcdef123456789123456789/labels").
+						and_return(board_labels_payload(c), JSON.generate(board_labels(c) + [version_label(version)]))
+
+						expect(client).to receive(:post).with("/labels", hash_excluding(color: nil)).
+						and_return(JSON.generate(version_label(version)))
+
+						allow(client).to receive(:delete).twice.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
+						allow(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 						subject.execute
 					end
 				end
@@ -214,7 +224,7 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).to receive(:delete).twice.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -228,7 +238,7 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).not_to receive(:delete).with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -243,6 +253,18 @@ module Hooks
 			before :each do
 				allow_get "/actions/abcdef123456789123456789/card", anything(), nil
 				allow_get "/lists/abcdef123456789123456789/cards", anything(), JSON.generate([cards_details(c),cards_details(c),cards_details(c)])
+
+				#super ugly setup here.
+				# we have 3 cards in a list
+				# each card will check for labels eg board_labels_payload(c)
+				# than add a label
+				# check the labels again eg JSON.generate(board_labels(c) + [version_label(version)])
+				# delete all cards with wrong version
+				# next iteration
+				allow(client).to receive(:get).with("/cards/abcdef123456789123456789/labels").
+				and_return(board_labels_payload(c), JSON.generate(board_labels(c) + [version_label(version)]),
+					board_labels_payload(c), JSON.generate(board_labels(c) + [version_label(version)]),
+					board_labels_payload(c), JSON.generate(board_labels(c) + [version_label(version)]))
 			end
 
 			describe "#new" do
@@ -266,13 +288,13 @@ module Hooks
 			end
 
 			describe '.list_version' do
-				it { expect(subject.list_version subject.list).to eq(version) }
-				it { expect(subject.list_version subject.list).to be_kind_of(String) }
+				it { expect(subject.list_version).to eq(version) }
+				it { expect(subject.list_version).to be_kind_of(String) }
 			end
 
 			describe '.versioned_list?' do
-				it { expect(subject.versioned_list? subject.list).to be_boolean }
-				it { expect(subject.versioned_list? subject.list).to eq(true) }
+				it { expect(subject.versioned_list?).to be_boolean }
+				it { expect(subject.versioned_list?).to eq(true) }
 			end
 
 			describe '.execute' do
@@ -285,7 +307,7 @@ module Hooks
 						and_return(JSON.generate(version_label(version)))
 
 						expect(client).to receive(:delete).exactly(6).times.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).exactly(3).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).exactly(3).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -298,7 +320,7 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).to receive(:delete).exactly(6).times.with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).to receive(:post).exactly(3).times.with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).to receive(:post).exactly(3).times.with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end
@@ -312,7 +334,7 @@ module Hooks
 
 						expect(client).not_to receive(:post).with("/labels", hash_including(name: version, idBoard: board.id))
 						expect(client).not_to receive(:delete).with("/cards/#{card.id}/idLabels/54656d9574d650d5672a06df")
-						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: '54656d9574d650d5672a06df'})
+						expect(client).not_to receive(:post).with("/cards/#{card.id}/idLabels", {value: 'abcdef123456789123456789'})
 
 						subject.execute
 					end

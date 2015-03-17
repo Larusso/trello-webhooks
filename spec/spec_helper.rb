@@ -112,7 +112,7 @@ module Helpers
 
 	def version_label version
 		{
-			"id" => "54656d9574d650d5672a06df",
+			"id" => "abcdef123456789123456789",
 			"idBoard" => "53d77b7e8b272ed7c843a943",
 			"name"=> version,
 			"color" => "green",

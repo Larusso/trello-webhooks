@@ -1,3 +1,5 @@
+require 'logger'
+
 module Hooks
 	module CardHelper
 
@@ -14,17 +16,18 @@ module Hooks
 		end
 
 		def find_label board, name
-			board.labels(false).each do |label|
+			board.labels.each do |label|
 				return label if label.name.eql? name
 			end
 			nil
 		end
 
-		def add_label_with_name label_name, force_create=false
+		def add_label_with_name label_name, force_create=false, color=nil
 			label = find_label board, label_name
 			
 			if label.nil? && force_create
-				label = Trello::Label.create name:label_name, board_id:board.id, color:nil
+				Hooks.logger.info("board needs new label")
+				label = Trello::Label.create name:label_name, board_id:board.id, color:color
 			end
 
 			card.add_label label unless label.nil?

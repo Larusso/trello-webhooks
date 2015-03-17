@@ -1,9 +1,11 @@
 require_relative 'base'
+require_relative 'hook_helper'
 
 require 'logger'
 
 module Hooks
 	class AutoVersion < Base
+		include CardHelper
 
 		VERSION_PATTERN = %r!\d+\.\d+(\.\d+)?!
 		VERSION_GROUP_PATTERN = /(\d+\.\d+(\.\d+)?(\.[\w\d]+)?)/
@@ -14,44 +16,35 @@ module Hooks
 			if (card_created? || card_moved?)
 				Hooks.logger.info("card created or moved")
 			
-				card_list = list.nil? ? card.list : list
-				if versioned_list? card_list
-					version = list_version card_list
+				self.list = list.nil? ? card.list : list
+				if versioned_list?
+					version = list_version
 					
 					Hooks.logger.info("put version #{version} to card #{card.id}")
-					update_card_version card, version
+					update_card_version version
 				end
-			elsif (list_updated? && versioned_list?(list))
-				version = list_version list
-				list.cards.each {|card|
-					update_card_version card, version
+			elsif (list_updated? && versioned_list?)
+				version = list_version
+				list.cards.each { |list_card|
+					self.card = list_card
+					update_card_version version
 				}
 			end
 		end
 
-		def update_card_version card, version
+		def update_card_version version
 			Hooks.logger.info("update card #{card.id}, version #{version}")
 
 			unless card_has_label? card, version
-				label_to_add = nil
-				unless board_has_label? version
-					Hooks.logger.info("board needs new label")
-					label_to_add = Trello::Label.create name: version, board_id: board.id, color: Trello::Label.label_colours.sample
-				else
-					label_to_add = find_label version
-				end
+				add_label_with_name version, true, Trello::Label.label_colours.sample
 
-				id_labels = card_version_labels(card)
-				
-				id_labels.each {|label|
-					card.remove_label label
+				card_version_labels.each {|label|
+					card.remove_label label unless label.name.eql?(version)
 				}
-
-				card.add_label(label_to_add) unless label_to_add.nil?
 			end
 		end
 
-		def list_version list
+		def list_version
 			version = nil
 			unless list.nil?
 				m = list.name.match(VERSION_GROUP_PATTERN)
@@ -60,8 +53,8 @@ module Hooks
 			version
 		end
 
-		def versioned_list? list
-			!list_version(list).nil?
+		def versioned_list?
+			!list_version.nil?
 		end
 
 		def card_has_label? card, name
@@ -69,35 +62,17 @@ module Hooks
 		end
 
 		def board_has_label? name
-			board.labels(false).map{ |label| label.name }.include? name
+			board.labels.map{ |label| label.name }.include? name
 		end
 
-		def find_label name
-			label = nil
-			board.labels(false).each { |l|
-				label = l if l.name.eql? name
-				break if label
-			}
-			label
-		end
-
-		def card_labels card
-			labels = card.labels
-		end
-
-		def board_labels
-			labels = board.labels false
-		end
-
-		def card_version_labels card
+		def card_version_labels
 			card.labels.select { |label|
 				!(label.name =~ VERSION_PATTERN).nil?
 			}
 		end
 
 		def board_version_labels
-			labels = board_labels
-			labels.select {|label|
+			board.labels.select {|label|
 				!(label.name =~ VERSION_PATTERN).nil?
 			}
 		end

@@ -18,12 +18,20 @@ module Hooks
 			@data = @action.data
 		end
 
+		def card= value
+			@card = value
+		end
+
 		def card
 			begin
 				@card ||= @action.card
 			rescue
 				nil
 			end
+		end
+
+		def list= value
+			@list = value
 		end
 
 		def list
@@ -59,7 +67,7 @@ module Hooks
 		end
 
 		def card_created?
-			@action.type.eql? 'createCard'
+			@action.type.eql?('createCard') || @action.type.eql?('convertToCardFromCheckItem') 
 		end
 
 		def list_updated?
