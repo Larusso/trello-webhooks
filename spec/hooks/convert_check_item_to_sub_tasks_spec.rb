@@ -69,6 +69,7 @@ module Hooks
 					allow_post "/cards/abcdef123456789123456789/idLabels", anything, "nothing"
 					allow_get "/actions/abcdef123456789123456789/board", anything() , boards_payload
 					allow_get "/boards/abcdef123456789123456789/labels", anything() , board_labels_payload(:create_card)
+					allow_get "/cards/abcdef123456789123456789/labels", anything() , JSON.generate([])
 				}
 
 				it "adds checklist item to source card" do
@@ -87,6 +88,14 @@ module Hooks
 				it "adds a label with task:card name" do
 					expect(client).to receive(:post).with("/cards/abcdef123456789123456789/idLabels", anything)
 					subject.execute
+				end
+
+				context "when source card has labels" do
+					it "copies all labels from source card to converted card" do
+						allow_get "/cards/abcdef123456789123456789/labels", anything() , board_labels_payload(:create_card)
+						expect(client).to receive(:post).exactly(5).times.with("/cards/abcdef123456789123456789/idLabels", {value: '54656d9574d650d5672a06df'})
+						subject.execute
+					end
 				end
 
 				context "when board has label" do

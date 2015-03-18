@@ -33,6 +33,9 @@ module Hooks
 				#add converted card as checklist item to source card
 				sub_tasks.add_item card.short_url
 				
+				#copy all labels from source card to created card
+				copy_labels source_card, card
+
 				#add link to source card to converted card description
 				card.desc="parent task: #{source_card.short_url}\n#{card.desc}"
 				card.update!
