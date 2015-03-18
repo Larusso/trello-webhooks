@@ -32,5 +32,11 @@ module Hooks
 
 			card.add_label label unless label.nil?
 		end
+
+		def copy_labels from, to
+			from.labels.each { |label|
+				to.add_label label
+			}
+		end
 	end
 end
