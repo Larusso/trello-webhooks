@@ -18,8 +18,11 @@ module Hooks
 			when Trello::Action
 				@action = Trello::ConvertToCardAction.convert_from_action action
 			end
-			raise Failure unless @action.valid?
 			@data = @action.data
+		end
+
+		def valid?
+			@action.valid?
 		end
 
 		def source_card

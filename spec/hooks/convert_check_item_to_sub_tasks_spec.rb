@@ -19,23 +19,30 @@ module Hooks
     	end
 
     	describe '#new' do
+
+    		subject {Hooks::ConvertCheckItemToSubTask}
+
     		context 'when creating with invalid action (create card)' do
     			let(:c) {:create_card}
 
     			it 'fails with json' do
-    				expect{ Hooks::ConvertCheckItemToSubTask.new action_payload(c) }.to raise_error(Failure)	
+    				hook = subject.new action_payload(c)
+    				expect(hook).not_to be_valid
     			end
 
     			it 'fails with Hash' do
-    				expect{ Hooks::ConvertCheckItemToSubTask.new action_details(c) }.to raise_error(Failure)	
+    				hook = subject.new action_details(c)
+    				expect(hook).not_to be_valid
     			end
 
     			it 'fails with Trello::Action' do
-    				expect{ Hooks::ConvertCheckItemToSubTask.new(Trello::Action.new action_details(c)) }.to raise_error(Failure)	
+    				hook = subject.new(Trello::Action.new action_details(c))
+    				expect(hook).not_to be_valid
     			end
 
     			it 'fails with Trello::ConvertToCardAction' do
-    				expect{ Hooks::ConvertCheckItemToSubTask.new(Trello::ConvertToCardAction.new action_details(c)) }.to raise_error(Failure)	
+    				hook = subject.new(Trello::ConvertToCardAction.new action_details(c))
+    				expect(hook).not_to be_valid
     			end
     		end
 
@@ -43,19 +50,23 @@ module Hooks
     			let(:c) {:convert_card}
 
     			it 'succeeds with json' do
-    				expect{ Hooks::ConvertCheckItemToSubTask.new action_payload(c) }.not_to raise_error
+    				hook = subject.new action_payload(c)
+    				expect(hook).to be_valid
     			end
 
     			it 'succeeds with Hash' do
-    				expect{ Hooks::ConvertCheckItemToSubTask.new action_details(c) }.not_to raise_error
+    				hook = subject.new action_details(c)
+    				expect(hook).to be_valid
     			end
 
     			it 'succeeds with Trello::Action' do
-    				expect{ Hooks::ConvertCheckItemToSubTask.new(Trello::Action.new action_details(c)) }.not_to raise_error	
+    				hook = subject.new(Trello::Action.new action_details(c))
+    				expect(hook).to be_valid
     			end
 
     			it 'succeeds with Trello::ConvertToCardAction' do
-    				expect{ Hooks::ConvertCheckItemToSubTask.new(Trello::ConvertToCardAction.new action_details(c)) }.not_to raise_error	
+    				hook = subject.new(Trello::ConvertToCardAction.new action_details(c))
+    				expect(hook).to be_valid
     			end
     		end
 		end
