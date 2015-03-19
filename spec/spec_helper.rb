@@ -8,6 +8,7 @@ require 'hooks'
 require 'trello'
 require 'json'
 require 'trello/convert_to_card_action'
+require 'trello/card_moved_action'
 
 ENV['TRELLO_KEY'] = "test_key"
 ENV['TRELLO_MEMBER_TOKEN'] = "test_token"
