@@ -311,6 +311,14 @@ module Helpers
 				'closed' => false,
 				'idBoard' => 'abcdef123456789123456789',
 				'cards' => [cards_details(key),cards_details(key),cards_details(key)]
+			},
+			card_moved_done_version:
+			{
+				'id' => 'abcdef123456789123456789',
+				'name' => 'Done 1.22.3',
+				'closed' => false,
+				'idBoard' => 'abcdef123456789123456789',
+				'cards' => [cards_details(key),cards_details(key),cards_details(key)]
 			}
 		}.fetch(key, d)
 	end
