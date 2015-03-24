@@ -42,9 +42,6 @@ module Hooks
 				#add link to source card to converted card description
 				card.desc="parent task: #{source_card.short_url}\n#{card.desc}"
 				card.update!
-
-				#add label to converted card
-				add_label_with_name "task:#{source_card.name}", true
 			end
 		end
 	end
