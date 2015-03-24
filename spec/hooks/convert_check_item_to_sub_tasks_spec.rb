@@ -78,6 +78,7 @@ module Hooks
 					allow_post "/checklists/namedabcdef123456789123456789/checkItems", anything, "nothing"
 					allow_post "/labels", anything, JSON.generate(version_label("nothing"))
 					allow_post "/cards/abcdef123456789123456789/idLabels", anything, "nothing"
+					allow_post "/cards/abcdef123456789123456789/actions/comments", anything, "nothing"
 					allow_get "/actions/abcdef123456789123456789/board", anything() , boards_payload
 					allow_get "/boards/abcdef123456789123456789/labels", anything() , board_labels_payload(:create_card)
 					allow_get "/cards/abcdef123456789123456789/labels", anything() , JSON.generate([])
@@ -96,8 +97,10 @@ module Hooks
 					subject.execute
 				end
 
-				it "adds a label with task:card name" do
-					expect(client).to receive(:post).with("/cards/abcdef123456789123456789/idLabels", anything)
+				it "adds a comment with checklist id" do
+					expected_card = Trello::Card.new cards_details(:move_card)
+					expected_comment = "parent checklist: namedabcdef123456789123456789"
+					expect(client).to receive(:post).with("/cards/#{expected_card.id}/actions/comments", {text: expected_comment})
 					subject.execute
 				end
 
@@ -105,21 +108,6 @@ module Hooks
 					it "copies all labels from source card to converted card" do
 						allow_get "/cards/abcdef123456789123456789/labels", anything() , board_labels_payload(:create_card)
 						expect(client).to receive(:post).exactly(5).times.with("/cards/abcdef123456789123456789/idLabels", {value: '54656d9574d650d5672a06df'})
-						subject.execute
-					end
-				end
-
-				context "when board has label" do
-					let!(:setup) {allow_get "/boards/abcdef123456789123456789/labels", anything(), JSON.generate( board_labels(1) + [version_label("task:do stuff")])}
-					it "uses label already on board and sets it to the card" do
-						expect(client).not_to receive(:post).with("/labels", anything)
-						subject.execute
-					end
-				end
-
-				context "when board has no label" do
-					it "creates new label on board" do
-						expect(client).to receive(:post).with("/labels", hash_including(name: "task:do stuff"))
 						subject.execute
 					end
 				end
