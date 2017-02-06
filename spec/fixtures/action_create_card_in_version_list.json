@@ -1,0 +1,75 @@
+{
+  "action": {
+    "id": "54edd0d39251ee2988706f97",
+    "idMemberCreator": "534404ba8c43d74c485bb1f3",
+    "data": {
+      "board": {
+        "shortLink": "7oNKzDRJ",
+        "name": "Test Board",
+        "id": "53d77b7e8b272ed7c843a943"
+      },
+      "list": {
+        "name": "1.22.1",
+        "id": "54b92e46f6196bd5f82300b8"
+      },
+      "card": {
+        "shortLink": "Y8HJuMmB",
+        "idShort": 10,
+        "name": "Mööp",
+        "id": "54edd0d39251ee2988706f96"
+      }
+    },
+    "type": "createCard",
+    "date": "2015-02-25T13:40:35.095Z",
+    "memberCreator": {
+      "id": "534404ba8c43d74c485bb1f3",
+      "avatarHash": "be8b67b976ccd10d66872e45b7d7e847",
+      "fullName": "Manfred Endres",
+      "initials": "ME",
+      "username": "manfredendres"
+    }
+  },
+  "model": {
+    "id": "53d77b7e8b272ed7c843a943",
+    "name": "Test Board",
+    "desc": "",
+    "descData": null,
+    "closed": false,
+    "idOrganization": null,
+    "pinned": false,
+    "url": "https://trello.com/b/7oNKzDRJ/test-board",
+    "shortUrl": "https://trello.com/b/7oNKzDRJ",
+    "prefs": {
+      "permissionLevel": "private",
+      "voting": "disabled",
+      "comments": "members",
+      "invitations": "members",
+      "selfJoin": true,
+      "cardCovers": true,
+      "cardAging": "regular",
+      "calendarFeedEnabled": false,
+      "background": "blue",
+      "backgroundColor": "#0079BF",
+      "backgroundImage": null,
+      "backgroundImageScaled": null,
+      "backgroundTile": false,
+      "backgroundBrightness": "unknown",
+      "canBePublic": true,
+      "canBeOrg": true,
+      "canBePrivate": true,
+      "canInvite": true
+    },
+    "labelNames": {
+      "green": "4.5.6",
+      "yellow": "",
+      "orange": "",
+      "red": "",
+      "purple": "",
+      "blue": "",
+      "sky": "",
+      "lime": "",
+      "pink": "",
+      "black": ""
+    }
+  }
+}

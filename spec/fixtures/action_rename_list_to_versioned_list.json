@@ -1,0 +1,72 @@
+{
+  "action": {
+    "id": "54eef8aff6c4f3aeda8c5b15",
+    "idMemberCreator": "534404ba8c43d74c485bb1f3",
+    "data": {
+      "board": {
+        "shortLink": "7oNKzDRJ",
+        "name": "Test Board",
+        "id": "53d77b7e8b272ed7c843a943"
+      },
+      "list": {
+        "id": "54eef8a54e22aeee50bcee3f",
+        "name": "todo 1.33.4"
+      },
+      "old": {
+        "name": "test"
+      }
+    },
+    "type": "updateList",
+    "date": "2015-02-26T10:42:55.602Z",
+    "memberCreator": {
+      "id": "534404ba8c43d74c485bb1f3",
+      "avatarHash": "be8b67b976ccd10d66872e45b7d7e847",
+      "fullName": "Manfred Endres",
+      "initials": "ME",
+      "username": "manfredendres"
+    }
+  },
+  "model": {
+    "id": "53d77b7e8b272ed7c843a943",
+    "name": "Test Board",
+    "desc": "",
+    "descData": null,
+    "closed": false,
+    "idOrganization": null,
+    "pinned": false,
+    "url": "https://trello.com/b/7oNKzDRJ/test-board",
+    "shortUrl": "https://trello.com/b/7oNKzDRJ",
+    "prefs": {
+      "permissionLevel": "private",
+      "voting": "disabled",
+      "comments": "members",
+      "invitations": "members",
+      "selfJoin": true,
+      "cardCovers": true,
+      "cardAging": "regular",
+      "calendarFeedEnabled": false,
+      "background": "blue",
+      "backgroundColor": "#0079BF",
+      "backgroundImage": null,
+      "backgroundImageScaled": null,
+      "backgroundTile": false,
+      "backgroundBrightness": "unknown",
+      "canBePublic": true,
+      "canBeOrg": true,
+      "canBePrivate": true,
+      "canInvite": true
+    },
+    "labelNames": {
+      "green": "4.5.6",
+      "yellow": "test",
+      "orange": "ui",
+      "red": "blocker",
+      "purple": "",
+      "blue": "",
+      "sky": "2.44.5",
+      "lime": "56.33.1",
+      "pink": "",
+      "black": ""
+    }
+  }
+}

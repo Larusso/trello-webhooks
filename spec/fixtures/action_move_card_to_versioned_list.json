@@ -1,0 +1,47 @@
+{
+  "action": {
+    "id": "54ef0831c626b81c80a9c6f1",
+    "idMemberCreator": "534404ba8c43d74c485bb1f3",
+    "data": {
+      "listAfter": {
+        "name": "todo 1.33.4",
+        "id": "54eef8a54e22aeee50bcee3f"
+      },
+      "listBefore": {
+        "name": "Done",
+        "id": "53d77b7e8b272ed7c843a946"
+      },
+      "board": {
+        "shortLink": "7oNKzDRJ",
+        "name": "Test Board",
+        "id": "53d77b7e8b272ed7c843a943"
+      },
+      "card": {
+        "shortLink": "lLy4UsUR",
+        "idShort": 5,
+        "name": "Card 5",
+        "id": "53d77b90639cc7b92b37bb3e",
+        "idList": "54eef8a54e22aeee50bcee3f"
+      },
+      "old": {
+        "idList": "53d77b7e8b272ed7c843a946"
+      }
+    },
+    "type": "updateCard",
+    "date": "2015-02-26T11:49:05.072Z",
+    "memberCreator": {
+      "id": "534404ba8c43d74c485bb1f3",
+      "avatarHash": "be8b67b976ccd10d66872e45b7d7e847",
+      "fullName": "Manfred Endres",
+      "initials": "ME",
+      "username": "manfredendres"
+    }
+  },
+  "model": {
+    "id": "53d77b7e8b272ed7c843a946",
+    "name": "Done",
+    "closed": false,
+    "idBoard": "53d77b7e8b272ed7c843a943",
+    "pos": 49152
+  }
+}

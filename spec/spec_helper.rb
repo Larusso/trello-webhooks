@@ -274,7 +274,7 @@ module Helpers
 	end
 
 	def cards_details key
-		{
+		d = {
 			'id' => 'abcdef123456789123456789',
 			'idShort' => '1',
 			'name' => 'do stuff',
@@ -289,6 +289,24 @@ module Helpers
 			'pos' => 12,
 			'dateLastActivity' => '2012-12-07T18:40:24.314Z'
 		}
+		{
+			sub_tasks_moved_done:
+			{
+				'id' => 'abcdef123456789123456789',
+				'idShort' => '1',
+				'name' => 'do stuff',
+				'desc' => 'parent task: https://trello.com/c/123456\nAwesome things are awesome.',
+				'closed' => false,
+				'idList' => 'abcdef123456789123456789',
+				'idBoard' => 'abcdef123456789123456789',
+				'idAttachmentCover' => 'abcdef123456789123456789',
+				'idMembers' => ['fedcba987654321987654321'],
+				'url' => 'https://trello.com/card/board/specify-the-type-and-scope-of-the-jit-in-a-lightweight-spec/abcdef123456789123456789/abcdef123456789123456789',
+				'shortUrl' => 'https://trello.com/c/abcdef12',
+				'pos' => 12,
+				'dateLastActivity' => '2012-12-07T18:40:24.314Z'
+			}
+		}.fetch(key, d)
 	end
 
 	def cards_payload key
@@ -313,6 +331,14 @@ module Helpers
 				'cards' => [cards_details(key),cards_details(key),cards_details(key)]
 			},
 			card_moved_done_version:
+			{
+				'id' => 'abcdef123456789123456789',
+				'name' => 'Done 1.22.3',
+				'closed' => false,
+				'idBoard' => 'abcdef123456789123456789',
+				'cards' => [cards_details(key),cards_details(key),cards_details(key)]
+			},
+			sub_tasks_moved_done:
 			{
 				'id' => 'abcdef123456789123456789',
 				'name' => 'Done 1.22.3',

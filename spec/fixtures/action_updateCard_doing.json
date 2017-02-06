@@ -1,0 +1,83 @@
+{
+  "action": {
+    "id": "54e78b2f8e4b458e0dfcf62b",
+    "idMemberCreator": "534404ba8c43d74c485bb1f3",
+    "data": {
+      "listAfter": {
+        "name": "Doing",
+        "id": "53d77b7e8b272ed7c843a945"
+      },
+      "listBefore": {
+        "name": "To Do",
+        "id": "53d77b7e8b272ed7c843a944"
+      },
+      "board": {
+        "shortLink": "7oNKzDRJ",
+        "name": "Test Board",
+        "id": "53d77b7e8b272ed7c843a943"
+      },
+      "card": {
+        "shortLink": "buTgYsdx",
+        "idShort": 4,
+        "name": "Card 4",
+        "id": "53d77b8d763f3d9d2bb94941",
+        "idList": "53d77b7e8b272ed7c843a945"
+      },
+      "old": {
+        "idList": "53d77b7e8b272ed7c843a944"
+      }
+    },
+    "type": "updateCard",
+    "date": "2015-02-20T19:29:51.273Z",
+    "memberCreator": {
+      "id": "534404ba8c43d74c485bb1f3",
+      "avatarHash": "be8b67b976ccd10d66872e45b7d7e847",
+      "fullName": "Manfred Endres",
+      "initials": "ME",
+      "username": "manfredendres"
+    }
+  },
+  "model": {
+    "id": "53d77b7e8b272ed7c843a943",
+    "name": "Test Board",
+    "desc": "",
+    "descData": null,
+    "closed": false,
+    "idOrganization": null,
+    "pinned": false,
+    "url": "https://trello.com/b/7oNKzDRJ/test-board",
+    "shortUrl": "https://trello.com/b/7oNKzDRJ",
+    "prefs": {
+      "permissionLevel": "private",
+      "voting": "disabled",
+      "comments": "members",
+      "invitations": "members",
+      "selfJoin": true,
+      "cardCovers": true,
+      "cardAging": "regular",
+      "calendarFeedEnabled": false,
+      "background": "blue",
+      "backgroundColor": "#0079BF",
+      "backgroundImage": null,
+      "backgroundImageScaled": null,
+      "backgroundTile": false,
+      "backgroundBrightness": "unknown",
+      "canBePublic": true,
+      "canBeOrg": true,
+      "canBePrivate": true,
+      "canInvite": true
+    },
+    "labelNames": {
+      "green": "4.5.6",
+      "yellow": "",
+      "orange": "",
+      "red": "",
+      "purple": "",
+      "blue": "",
+      "sky": "",
+      "lime": "",
+      "pink": "",
+      "black": ""
+    }
+  }
+}
